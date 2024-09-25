@@ -6,6 +6,7 @@ import Header from "@/components/HomePage/Header";
 import HeroSlider from "@/components/HomePage/HeroSlider";
 import NavBar from "@/components/HomePage/Navbar";
 import ProductsCard from "@/components/HomePage/ProductsCard";
+import AddressPage from "./Address/page";
 
 
 export default function HomePage() {
@@ -14,10 +15,11 @@ export default function HomePage() {
       <Header />
       <NavBar />
       <main>
-        <HeroSlider/>
+        {/* <HeroSlider/>
         <ProductCategories />
         <Banner />
-        <ProductsCard/>
+        <ProductsCard/> */}
+        <AddressPage/>
       </main>
     </div>
   );
