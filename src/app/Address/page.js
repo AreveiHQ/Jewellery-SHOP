@@ -1,19 +1,10 @@
+import Category from "@/components/Delivery/Categories";
+import DeliveryForm from "@/components/Delivery/DeliveryForm";
+import Footer from "@/components/Delivery/Footer";
+import Header from "@/components/Delivery/Header";
+import OrderCart from "@/components/Delivery/OrderCart";
 
-
-
-
-
-
-
-
-
-import Header from "../Components/Header";
-import Footer from "../Components/Footer";
-import Category from "../Components/Categories";
-import DeliveryForm from "../Components/DeliveryForm";
-import OrderCart from "../Components/OrderCart";
-
-export default function Home() {
+export default function CartPage() {
   return (
     <div className="">
       <main className="">
