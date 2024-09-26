@@ -12,7 +12,7 @@ export default function HeroSlider() {
           className="h-full w-full object-cover"
         />
         <div className="absolute inset-0  flex  items-center h-full w-full  bg-black/10">
-          <div className="w-3/4  md:w-1/3 ml-20">
+          <div className="w-3/4  md:w-1/3 ml-20 hidden lg:block">
             <Typography
               variant="h1"
               color="white"
@@ -34,7 +34,7 @@ export default function HeroSlider() {
               <Button size="lg" color="white">
                 Explore
               </Button>
-              <Button size="lg" color="white" variant="text">
+              <Button size="lg" color="pink" variant="contained">
                 Gallery
               </Button>
             </div>
@@ -48,7 +48,7 @@ export default function HeroSlider() {
           className="h-full w-full object-cover"
         />
         <div className="absolute inset-0  flex  items-center h-full w-full  bg-black/10">
-          <div className="w-3/4  md:w-1/3 ml-20">
+          <div className="w-3/4  md:w-1/3 ml-20 hidden lg:block">
             <Typography
               variant="h1"
               color="white"
@@ -70,7 +70,7 @@ export default function HeroSlider() {
               <Button size="lg" color="white">
                 Explore
               </Button>
-              <Button size="lg" color="white" variant="text">
+              <Button size="lg" color="pink" variant="contained">
                 Gallery
               </Button>
             </div>
@@ -84,7 +84,7 @@ export default function HeroSlider() {
           className="h-full w-full object-cover"
         />
         <div className="absolute inset-0  flex  items-center h-full w-full  bg-black/10">
-          <div className="w-3/4  md:w-1/3 ml-20">
+          <div className="w-3/4  md:w-1/3 ml-20 hidden lg:block">
             <Typography
               variant="h1"
               color="white"
@@ -106,7 +106,7 @@ export default function HeroSlider() {
               <Button size="lg" color="white">
                 Explore
               </Button>
-              <Button size="lg" color="white" variant="text">
+              <Button size="lg" color="pink" variant="contained">
                 Gallery
               </Button>
             </div>
