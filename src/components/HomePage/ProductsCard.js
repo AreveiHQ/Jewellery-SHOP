@@ -1,6 +1,7 @@
 import React from "react";
 // A sample product data for the design
 import RatingSVG from '../../assets/rating.svg'
+import { Button } from "@/MaterialTailwindNext";
 const products = [
   {
     id: 1,
@@ -108,9 +109,9 @@ export default function ProductsCard() {
               <div className="text-gray-600">{product.name}</div>
               </div>
               </div>
-              <button className="mt-4 bg-[#F8C0BF] text-black py-2 px-4 rounded-md w-full">
+              <Button  className="mt-4 bg-[#F8C0BF]  hover:bg-[#fe6161] hover: text-black transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm">
                 Add to Cart
-              </button>
+              </Button>
             </div>
           ))}
         </div>
@@ -162,9 +163,9 @@ export default function ProductsCard() {
               <div className="text-sm text-gray-500 mt-2">
                 {product.rating} ★
               </div>
-              <button className="mt-4 bg-red-500 text-white py-2 px-4 rounded-md w-full">
+              <Button className="mt-4 bg-[#fe6161] hover:bg-red-500 transition-colors text-white py-2 px-4 rounded-md w-full capitalize text-sm ">
                 Add to Cart
-              </button>
+              </Button>
             </div>
           ))}
         </div>
