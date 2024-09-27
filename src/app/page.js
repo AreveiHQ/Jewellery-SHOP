@@ -1,6 +1,6 @@
 // src/app/page.js
 
-import Footer from "@/components/Delivery/Footer";
+import Footer from "@/components/HomePage/Footer";
 import Banner from "@/components/HomePage/Banner";
 import ProductCategories from "@/components/HomePage/Category";
 import Header from "@/components/HomePage/Header";
