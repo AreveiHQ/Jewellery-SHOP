@@ -4,9 +4,9 @@ import Image from "next/image";
 export default function HeroSlider() {
   return (
     <Carousel className=""
-//      autoplay autoplayDelay={10000} loop
+     autoplay autoplayDelay={10000} loop
     >
-      <div className="relative h-full w-full">
+      {/* <div className="relative h-full w-full">
         <Image width={900} height={300} 
           src="/images/SL1.jpg"
           alt="image 1"
@@ -41,7 +41,7 @@ export default function HeroSlider() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="relative h-full w-full">
       <Image width={900} height={300} 
           src="/images/SL2.jpg"
