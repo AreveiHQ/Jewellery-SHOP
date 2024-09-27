@@ -8,7 +8,7 @@ export default function HeroSlider() {
     >
       <div className="relative h-full w-full">
         <Image width={900} height={300} 
-          src="/images/SL1.png"
+          src="/images/SL1.jpg"
           alt="image 1"
           className="h-full w-full object-cover"
         />
