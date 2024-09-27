@@ -8,6 +8,7 @@ import HeroSlider from "@/components/HomePage/HeroSlider";
 import NavBar from "@/components/HomePage/Navbar";
 import ProductsCard from "@/components/HomePage/ProductsCard";
 import Testimonials from "@/components/HomePage/Testimonials";
+import Image from "next/image";
 
 
 export default function HomePage() {
@@ -21,7 +22,7 @@ export default function HomePage() {
         <Banner />
         <ProductsCard/>
         <div className="w-full overflow-auto">
-          <img src="/images/Flower.png" className="object-cover w-full" alt="" />
+          <Image width={900} height={400}  src="/images/Flower.png" className="object-cover w-full" alt="" />
         </div>
         <Testimonials/>
       </main>

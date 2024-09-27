@@ -2,6 +2,7 @@ import React from "react";
 // A sample product data for the design
 import RatingSVG from '../../assets/rating.svg'
 import { Button } from "@/MaterialTailwindNext";
+import Image from "next/image";
 const products = [
   {
     id: 1,
@@ -88,7 +89,7 @@ export default function ProductsCard() {
               className="bg-white  rounded-lg p-4  hover:shadow-xl"
             >
                 <div >
-              <img
+              <Image width={133} height={150} 
                 src={product.imageUrl}
                 alt={product.name}
                 className="w-full h-52 object-cover rounded-lg mb-4"
@@ -126,7 +127,7 @@ export default function ProductsCard() {
               key={category.id}
               className="relative bg-white rounded-lg overflow-hidden shadow-lg w-40 h-60"
             >
-              <img
+              <Image width={133} height={150} 
                 src={category.imageUrl}
                 alt={category.name}
                 className="object-cover w-full h-full"
@@ -148,7 +149,7 @@ export default function ProductsCard() {
               key={product.id}
               className="bg-white shadow-md rounded-lg p-4 text-center hover:shadow-md"
             >
-              <img
+              <Image width={133} height={150} 
                 src={product.imageUrl}
                 alt={product.name}
                 className="w-full h-40 object-cover rounded-lg mb-4"

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 // components/ProductCategories.js
 export default function ProductCategories() {
         const categories = [
@@ -14,7 +16,7 @@ export default function ProductCategories() {
             <div className="grid grid-cols-6 gap-6">
               {categories.map((category) => (
                 <div key={category.name} className="text-center">
-                  <img
+                  <Image width={100} height={100} 
                     src={category.image}
                     alt={category.name}
                     className="w-24 h-24 mx-auto mb-2"

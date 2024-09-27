@@ -1,4 +1,5 @@
 import { Carousel, Typography, Button } from "@/MaterialTailwindNext";
+import Image from "next/image";
  
 export default function HeroSlider() {
   return (
@@ -6,8 +7,8 @@ export default function HeroSlider() {
 //      autoplay autoplayDelay={10000} loop
     >
       <div className="relative h-full w-full">
-        <img
-          src="images/SL1.png"
+        <Image width={900} height={300} 
+          src="/images/SL1.png"
           alt="image 1"
           className="h-full w-full object-cover"
         />
@@ -42,8 +43,8 @@ export default function HeroSlider() {
         </div>
       </div>
       <div className="relative h-full w-full">
-      <img
-          src="images/SL2.jpg"
+      <Image width={900} height={300} 
+          src="/images/SL2.jpg"
           alt="image 2"
           className="h-full w-full object-cover"
         />
@@ -78,8 +79,8 @@ export default function HeroSlider() {
         </div>
       </div>
       <div className="relative h-full w-full">
-      <img
-          src="images/SL3.jpg"
+      <Image width={900} height={300} 
+          src="/images/SL3.jpg"
           alt="image 1"
           className="h-full w-full object-cover"
         />

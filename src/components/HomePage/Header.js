@@ -31,6 +31,7 @@ import {
  import Store from '@/assets/Stores.svg'
  import Cart from '@/assets/Cart.svg'
 import Link from "next/link";
+import Image from "next/image";
 // profile menu component
 const profileMenuItems = [
   {
@@ -299,7 +300,7 @@ export default function ComplexNavbar() {
           className="mr-4 ml-2 cursor-pointer py-1.5 font-medium "
         >
           {/* <JenniLogo  className='h-10'/> */}
-          <img src='/images/jenii1.png' alt="" />
+          <Image width={80} height={80} src='/images/jenii1.png' alt="" />
         </Typography>
         <Search/>
         <IconButton
