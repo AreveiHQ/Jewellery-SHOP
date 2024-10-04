@@ -13,7 +13,7 @@ const products = [
     imageUrl: "/images/Prod1.png", // Replace with actual path
   },
   {
-    id: 1,
+    id: 2,
     name: "Silver Earing for Birthday",
     price: "Rs. 543",
     oldPrice: "Rs. 634",
@@ -21,7 +21,7 @@ const products = [
     imageUrl: "/images/Prod2.png", // Replace with actual path
   },
   {
-    id: 1,
+    id: 3,
     name: "Silver Earing for Birthday",
     price: "Rs. 543",
     oldPrice: "Rs. 634",
@@ -29,7 +29,7 @@ const products = [
     imageUrl: "/images/Prod3.png", // Replace with actual path
   },
   {
-    id: 1,
+    id: 4,
     name: "Silver Earing for Birthday",
     price: "Rs. 543",
     oldPrice: "Rs. 634",
@@ -37,7 +37,7 @@ const products = [
     imageUrl: "/images/Prod4.png", // Replace with actual path
   },
   {
-    id: 1,
+    id: 5,
     name: "Silver Earing for Birthday",
     price: "Rs. 543",
     oldPrice: "Rs. 634",
@@ -45,7 +45,7 @@ const products = [
     imageUrl: "/images/Prod5.png", // Replace with actual path
   },
   {
-    id: 1,
+    id: 6,
     name: "Silver Earing for Birthday",
     price: "Rs. 543",
     oldPrice: "Rs. 634",
@@ -53,7 +53,7 @@ const products = [
     imageUrl: "/images/Prod6.png", // Replace with actual path
   },
   {
-    id: 1,
+    id: 7,
     name: "Silver Earing for Birthday",
     price: "Rs. 543",
     oldPrice: "Rs. 634",
@@ -61,7 +61,7 @@ const products = [
     imageUrl: "/images/Prod7.png", // Replace with actual path
   },
   {
-    id: 1,
+    id: 8,
     name: "Silver Earing for Birthday",
     price: "Rs. 543",
     oldPrice: "Rs. 634",
