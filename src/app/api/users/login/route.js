@@ -24,15 +24,17 @@ export async function POST(req) {
     }
 
     const userId = user._id;
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET);
+    const token =  await jwt.sign({ userId }, process.env.JWT_SECRET);
 
-    return NextResponse.json(
+    const response= NextResponse.json(
       {
         message: 'Sign-in successful',
         token: token,
       },
       { status: 200 }
     );
+    response.cookies.set("token",token,{httpOnly:true,expires:Date.now()+(24*60*60*1000)});
+    return response;
   } catch (err) {
         return NextResponse.json({
                 errors:err.isOperational?err:err.message,
