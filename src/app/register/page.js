@@ -6,6 +6,8 @@ import Header from "@/components/HomePage/Header";
 import NavBar from "@/components/HomePage/Navbar";
 import Link from 'next/link';
 import axiosInstance from '@/utils/axiosInstance';
+import { toast, ToastContainer } from 'react-toastify'; // Import Toastify components
+import 'react-toastify/dist/ReactToastify.css'; // Import Toastify styles
 
 // Yup validation schema for sign-up
 const signupSchema = yup.object().shape({
@@ -28,18 +30,20 @@ export default function SignUp() {
   });
 
   const onSubmit = async (data) => {
-        try {
-          const response = await axiosInstance.post('/api/users/signup', {
-            name: data.name,
-            email: data.email,
-            phone: data.phone,
-            password: data.password,
-          });
-          console.log('User created successfully:', response.data);
-        } catch (error) {
-          console.error('Error creating user:', error.response ? error.response : error.message);
-        }
-      };
+    try {
+      const response = await axiosInstance.post('/api/users/signup', {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        password: data.password,
+      });
+      console.log('User created successfully:', response.data);
+      toast.success('User created successfully!'); // Show success message
+    } catch (error) {
+      console.error('Error creating user:', error.response ? error.response.data : error.message);
+      toast.error(error.response?.data?.errors || 'Error creating user.'); // Show error message
+    }
+  };
 
   return (
     <>
@@ -117,6 +121,8 @@ export default function SignUp() {
           </form>
         </div>
       </div>
+
+      <ToastContainer /> {/* Add ToastContainer to the component */}
     </>
   );
 }
