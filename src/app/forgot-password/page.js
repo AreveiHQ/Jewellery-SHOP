@@ -1,22 +1,32 @@
-"use client"
+"use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validation logic here
     if (!email) {
       setError('Email/Number is required.');
     } else {
       setError('');
-      // Call API to send OTP (dummy logic here)
-      // After success, redirect to OTP page
-      router.push('/verify-otp');
+      try {
+        const response = await axios.post('/api/users/request-otp', { email });
+        if (response.data.message) {
+          toast.success(response.data.message); 
+          router.push('/verify-otp');
+
+        }
+      } catch (error) {
+        console.error('Error sending OTP:', error);
+        setError('Failed to send OTP.');
+        toast.error('Failed to send OTP. Please try again.'); 
+      }
     }
   };
 
@@ -36,10 +46,7 @@ export default function ForgotPassword() {
             />
             {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           </div>
-          <button
-            type="submit"
-            className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors"
-          >
+          <button type="submit" className="w-full bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-700 transition-colors">
             Generate OTP
           </button>
         </form>
