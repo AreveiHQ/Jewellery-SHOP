@@ -6,7 +6,7 @@ import Header from "@/components/HomePage/Header";
 import NavBar from "@/components/HomePage/Navbar";
 import Link from 'next/link';
 import axiosInstance from '@/utils/axiosInstance';
-
+import { useRouter } from 'next/navigation';
 // Yup validation schema
 const schema = yup.object().shape({
   email: yup
@@ -32,6 +32,7 @@ export default function Login() {
         password: data.password,
       });
       console.log('Login successful:', response.data);
+      useRouter().push('/');
     } catch (error) {
       console.error('Error logging in:', error);
     }

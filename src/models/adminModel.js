@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
-const userSchema = new mongoose.Schema({
+
+const adminSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -32,30 +33,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    isVerified: {
-        type: Boolean,
-        default: false
-    },
-    isAdmin: {
-        type: Boolean,
-        default: false
-    },
-    forgotPasswordToken:String,
-    forgotPasswordTokenExpiry:Date,
-    verifyToken:String,
-    verifyTokenExpiry:Date,
-    otp: {
-        type: String
-    },
-    otpExpires: {
-        type: Date
-    },
-    
 }, {
     timestamps: true
 });
 
 
-const User = mongoose.models.User ||mongoose.model('User', userSchema);
+const Admin = mongoose.model('Admin', adminSchema);
 
-export default User;
+export default Admin;
