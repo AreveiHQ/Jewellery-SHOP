@@ -23,6 +23,7 @@ export async function POST(request) {
     await cart.save();
     return NextResponse.json(cart, { status: 200 });
   } catch (error) {
+    console.log(error.message)
     return NextResponse.json({ error: 'Server error while adding to cart' }, { status: 500 });
   }
 }
