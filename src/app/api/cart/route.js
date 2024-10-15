@@ -1,10 +1,20 @@
 import { NextResponse } from 'next/server';
 import Cart from '@/models/cartModel';
-import { getDataFromToken } from '@/helper/getDataFromToken';
+import { connect } from '@/dbConfig/dbConfig';
+import { UserAuth } from '@/utils/userAuth';
+connect();
 
+function handleError(error,defaultMessage=""){
+  if(error.isOperational){
+    return NextResponse.json({message:error.message})
+}
+  else{
+    return NextResponse.json({message:defaultMessage||error.message},{ status: 500 })
+  }
+}
 export async function POST(request) {
-  const userId = await getDataFromToken(request);  // Assume `userId` is retrieved from a middleware after authentication
-
+  const userId =  UserAuth(request);  // Assume `userId` is retrieved from a middleware after authentication
+  
   try {
     let cart = await Cart.findOne({ userId });
     if (!cart) {
@@ -18,15 +28,15 @@ export async function POST(request) {
 }
 
 export async function GET(request) {
-  const userId = await getDataFromToken(request); // Assume `userId` is retrieved from a middleware after 
   try {
-        console.log(userId)
+    const userId =  UserAuth(request);
+
     const cart = await Cart.findOne({ userId }).populate('items.productId'); // Populate product details
     if (!cart) {
       return NextResponse.json({ message: 'Cart not found' }, { status: 404 });
     }
     return NextResponse.json(cart, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: 'Server error while fetching cart' }, { status: 500 });
+    return NextResponse.json({ error: error.message,message:'Server error while fetching cart'}, { status: 500 });
   }
 }

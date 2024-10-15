@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import Cart from '@/models/cartModel';
-import { getDataFromToken } from '@/helper/getDataFromToken';
-
+import { connect } from '@/dbConfig/dbConfig';
+import { UserAuth } from '@/utils/userAuth';
+connect();
 export async function DELETE(request) {
-  const userId = await getDataFromToken(request);  // Assume `userId` is retrieved from a middleware after authentication
+  const userId =  UserAuth(request);  // Assume `userId` is retrieved from a middleware after authentication
   const { productId } = await request.json();
 
   try {

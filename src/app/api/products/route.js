@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import Product from '@/models/productModel';
 import cloudinary from '@/lib/config/cloudinaryConfigration';
 import applyDiscount from '@/utils/productDiscount';
+import { connect } from '@/dbConfig/dbConfig';
+connect();
 // Utility function for error response
 const handleError = (error) => NextResponse.json({ message: error.message }, { status: 500 });
 

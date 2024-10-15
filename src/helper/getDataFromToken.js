@@ -9,3 +9,4 @@ export  const getDataFromToken = async(req)=>{
         throw new Error(error.message)
 }
 }
+

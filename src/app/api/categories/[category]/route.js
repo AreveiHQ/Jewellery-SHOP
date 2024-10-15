@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Product from '@/models/productModel';
-
+import { connect } from '@/dbConfig/dbConfig';
+connect();
 export async function GET(request, { params }) {
   const { category } = params;
   const validCategories = ['men', 'women', 'kids'];

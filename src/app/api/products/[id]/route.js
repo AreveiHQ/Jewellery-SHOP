@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Product from '@/models/productModel';
-
+import { connect } from '@/dbConfig/dbConfig';
+connect();
 // Get a product by ID
 export async function GET(request, { params }) {
   const { id } = params;

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Product from '@/models/productModel';
-
+import { connect } from '@/dbConfig/dbConfig';
+connect();
 // Create a review for a specific product
 export async function POST(request, { params }) {
   const { id } = params;
