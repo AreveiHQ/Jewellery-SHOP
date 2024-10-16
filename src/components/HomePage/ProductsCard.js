@@ -1,8 +1,10 @@
-import React from "react";
-// A sample product data for the design
+"use client";
+import React, { useState } from "react";
+import axios from "axios";
 import RatingSVG from '../../assets/rating.svg'
 import { Button } from "@/MaterialTailwindNext";
 import Image from "next/image";
+import { useState } from "react";
 const products = [
   {
     id: 1,
@@ -76,7 +78,38 @@ const categories = [
   { id: 2, name: "Men", imageUrl: "/images/men-category.png" },
 ];
 
+
+
 export default function ProductsCard() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleAddToCart = async (product) => {
+    setLoading(true);
+    setError(null);
+
+    const productData = {
+      productId: product.id,
+      img_src: product.imageUrl,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+    };
+
+    try {
+      const response = await axios.post('/api/cart/add', productData);
+      console.log('Product added to cart:', response.data);
+
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to add product to cart');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  
+  
+  
   return (
     <div className="max-w-7xl mx-auto p-4">
       {/* Top Products Section */}
@@ -86,33 +119,42 @@ export default function ProductsCard() {
           {products.map((product) => (
             <div
               key={product.id}
-              className="bg-white  rounded-lg p-4  hover:shadow-xl"
+              className="bg-white rounded-lg p-4 hover:shadow-xl"
             >
-                <div >
-              <Image width={133} height={150} 
+              <Image
+                width={133}
+                height={150}
                 src={product.imageUrl}
                 alt={product.name}
                 className="w-full h-52 object-cover rounded-lg mb-4"
               />
-              <div className=" px-1">
-              <div className="flex justify-between items-center gap-2 mt-2 ">
-                <div className="flex justify-center items-center gap-2">
-                <span className="text-[#1E1E1E] font-semibold text-base ">{product.price}</span>
-                <span className="line-through text-[#F42222] text-xs">
-                  {product.oldPrice}
-                </span>
+              <div className="px-1">
+                <div className="flex justify-between items-center gap-2 mt-2">
+                  <div className="flex justify-center items-center gap-2">
+                    <span className="text-[#1E1E1E] font-semibold text-base">
+                      {product.price}
+                    </span>
+                    <span className="line-through text-[#F42222] text-xs">
+                      {product.oldPrice}
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-2 flex justify-center items-center gap-2">
+                    <span className="text-[#F42222]">
+                      <RatingSVG />
+                    </span>
+                    <span>{product.rating} </span>
+                  </div>
                 </div>
-              <div className="text-sm text-gray-500 mt-2 flex justify-center items-center gap-2 ">
-                <span className="text-[#F42222]"><RatingSVG/></span>
-                <span>{product.rating} </span>
+                <div className="text-gray-600">{product.name}</div>
               </div>
-              </div>
-              <div className="text-gray-600">{product.name}</div>
-              </div>
-              </div>
-              <Button  className="mt-4 bg-[#F8C0BF]  hover:bg-[#fe6161] hover: text-black transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm">
-                Add to Cart
+              <Button
+                className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
+                onClick={() => handleAddToCart(product)}
+                disabled={loading}
+              >
+                {loading ? "Adding..." : "Add to Cart"}
               </Button>
+              {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
             </div>
           ))}
         </div>
@@ -127,7 +169,9 @@ export default function ProductsCard() {
               key={category.id}
               className="relative bg-white rounded-lg overflow-hidden shadow-lg w-40 h-60"
             >
-              <Image width={133} height={150} 
+              <Image
+                width={133}
+                height={150}
                 src={category.imageUrl}
                 alt={category.name}
                 className="object-cover w-full h-full"
@@ -149,7 +193,9 @@ export default function ProductsCard() {
               key={product.id}
               className="bg-white shadow-md rounded-lg p-4 text-center hover:shadow-md"
             >
-              <Image width={133} height={150} 
+              <Image
+                width={133}
+                height={150}
                 src={product.imageUrl}
                 alt={product.name}
                 className="w-full h-40 object-cover rounded-lg mb-4"
@@ -164,13 +210,21 @@ export default function ProductsCard() {
               <div className="text-sm text-gray-500 mt-2">
                 {product.rating} ★
               </div>
-              <Button className="mt-4 bg-[#fe6161] hover:bg-red-500 transition-colors text-white py-2 px-4 rounded-md w-full capitalize text-sm ">
-                Add to Cart
+              <Button
+                className="mt-4 bg-[#fe6161] hover:bg-red-500 transition-colors text-white py-2 px-4 rounded-md w-full capitalize text-sm"
+                onClick={() => handleAddToCart(product)}
+                disabled={loading}
+              >
+                {loading ? "Adding..." : "Add to Cart"}
               </Button>
+              {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
             </div>
           ))}
         </div>
       </section>
     </div>
   );
+
 }
+
+
