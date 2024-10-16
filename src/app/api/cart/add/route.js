@@ -25,5 +25,6 @@ export async function POST(request) {
   } catch (error) {
     console.log(error.message)
     return NextResponse.json({ error: 'Server error while adding to cart' }, { status: 500 });
+    
   }
 }

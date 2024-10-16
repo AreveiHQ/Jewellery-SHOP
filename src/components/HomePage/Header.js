@@ -316,7 +316,7 @@ export default function Header() {
           <IconButton color="white" className=" shadow-none">
           <Store/>
           </IconButton>
-          <Link href='/Address' >
+          <Link href='/checkout' >
           <Badge content="5" color="pink">
           <IconButton color="white" className=" shadow-none">
           <Cart/>

@@ -1,10 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import axios from "axios";
-import RatingSVG from '../../assets/rating.svg'
 import { Button } from "@/MaterialTailwindNext";
 import Image from "next/image";
-import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Cookies from 'js-cookie'; 
+
 const products = [
   {
     id: 1,
@@ -12,7 +14,7 @@ const products = [
     price: "Rs. 543",
     oldPrice: "Rs. 634",
     rating: "4.3",
-    imageUrl: "/images/Prod1.png", // Replace with actual path
+    imageUrl: "/images/Prod1.png",
   },
   {
     id: 2,
@@ -20,7 +22,7 @@ const products = [
     price: "Rs. 543",
     oldPrice: "Rs. 634",
     rating: "4.3",
-    imageUrl: "/images/Prod2.png", // Replace with actual path
+    imageUrl: "/images/Prod2.png",
   },
   {
     id: 3,
@@ -28,7 +30,7 @@ const products = [
     price: "Rs. 543",
     oldPrice: "Rs. 634",
     rating: "4.3",
-    imageUrl: "/images/Prod3.png", // Replace with actual path
+    imageUrl: "/images/Prod3.png",
   },
   {
     id: 4,
@@ -36,7 +38,7 @@ const products = [
     price: "Rs. 543",
     oldPrice: "Rs. 634",
     rating: "4.3",
-    imageUrl: "/images/Prod4.png", // Replace with actual path
+    imageUrl: "/images/Prod4.png",
   },
   {
     id: 5,
@@ -44,7 +46,7 @@ const products = [
     price: "Rs. 543",
     oldPrice: "Rs. 634",
     rating: "4.3",
-    imageUrl: "/images/Prod5.png", // Replace with actual path
+    imageUrl: "/images/Prod5.png",
   },
   {
     id: 6,
@@ -52,7 +54,7 @@ const products = [
     price: "Rs. 543",
     oldPrice: "Rs. 634",
     rating: "4.3",
-    imageUrl: "/images/Prod6.png", // Replace with actual path
+    imageUrl: "/images/Prod6.png",
   },
   {
     id: 7,
@@ -60,7 +62,7 @@ const products = [
     price: "Rs. 543",
     oldPrice: "Rs. 634",
     rating: "4.3",
-    imageUrl: "/images/Prod7.png", // Replace with actual path
+    imageUrl: "/images/Prod7.png",
   },
   {
     id: 8,
@@ -68,9 +70,8 @@ const products = [
     price: "Rs. 543",
     oldPrice: "Rs. 634",
     rating: "4.3",
-    imageUrl: "/images/Prod8.png", // Replace with actual path
+    imageUrl: "/images/Prod8.png",
   },
-  // Add more products...
 ];
 
 const categories = [
@@ -78,15 +79,11 @@ const categories = [
   { id: 2, name: "Men", imageUrl: "/images/men-category.png" },
 ];
 
-
-
 export default function ProductsCard() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [loadingProductId, setLoadingProductId] = useState(null);
 
   const handleAddToCart = async (product) => {
-    setLoading(true);
-    setError(null);
+    setLoadingProductId(product.id);
 
     const productData = {
       productId: product.id,
@@ -96,22 +93,31 @@ export default function ProductsCard() {
       quantity: 1,
     };
 
-    try {
-      const response = await axios.post('/api/cart/add', productData);
-      console.log('Product added to cart:', response.data);
+    const token = Cookies.get('token');
 
+    try {
+      console.log(token);
+      const response = await axios.post("/api/cart/add", productData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      console.log("Product added to cart:", response.data);
+      toast.success("Product added to cart!");
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to add product to cart');
+      console.error(err); 
+      toast.error("Failed to add product to cart!");
     } finally {
-      setLoading(false);
+      setLoadingProductId(null);
     }
   };
 
-  
-  
-  
   return (
     <div className="max-w-7xl mx-auto p-4">
+     
+
       {/* Top Products Section */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Top Products</h2>
@@ -139,10 +145,8 @@ export default function ProductsCard() {
                     </span>
                   </div>
                   <div className="text-sm text-gray-500 mt-2 flex justify-center items-center gap-2">
-                    <span className="text-[#F42222]">
-                      <RatingSVG />
-                    </span>
-                    <span>{product.rating} </span>
+                    <span className="text-[#F42222]">★</span>
+                    <span>{product.rating}</span>
                   </div>
                 </div>
                 <div className="text-gray-600">{product.name}</div>
@@ -150,11 +154,10 @@ export default function ProductsCard() {
               <Button
                 className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
                 onClick={() => handleAddToCart(product)}
-                disabled={loading}
+                disabled={loadingProductId === product.id}
               >
-                {loading ? "Adding..." : "Add to Cart"}
+                {loadingProductId === product.id ? "Adding..." : "Add to Cart"}
               </Button>
-              {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
             </div>
           ))}
         </div>
@@ -213,18 +216,14 @@ export default function ProductsCard() {
               <Button
                 className="mt-4 bg-[#fe6161] hover:bg-red-500 transition-colors text-white py-2 px-4 rounded-md w-full capitalize text-sm"
                 onClick={() => handleAddToCart(product)}
-                disabled={loading}
+                disabled={loadingProductId === product.id}
               >
-                {loading ? "Adding..." : "Add to Cart"}
+                {loadingProductId === product.id ? "Adding..." : "Add to Cart"}
               </Button>
-              {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
             </div>
           ))}
         </div>
       </section>
     </div>
   );
-
 }
-
-

@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import User from '@/models/userModel';
 import { connect } from '@/dbConfig/dbConfig';
 import { BadRequestError } from '@/lib/errors';
+import Cookies from 'js-cookie';
 
 connect();
 
