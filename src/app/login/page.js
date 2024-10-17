@@ -48,7 +48,7 @@ export default function Login() {
 
       console.log("Login successful:", response.data);
       toast.success("Login successful!");
-
+      localStorage.setItem('token', response.data.token);
       router.push("/");
     } catch (error) {
       console.error("Error logging in:", error);

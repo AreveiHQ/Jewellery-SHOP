@@ -102,6 +102,7 @@ export default function ProductsCard() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
+        withCredentials: true,
       });
       
       console.log("Product added to cart:", response.data);

@@ -1,4 +1,5 @@
-import { NavList } from "./Header";
+import NavList from "./Navlist";
+
 
 // components/NavBar.js
 export default function NavBar() {
