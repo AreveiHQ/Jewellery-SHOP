@@ -5,8 +5,7 @@ import { Button } from "@/MaterialTailwindNext";
 import Image from "next/image";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Cookies from 'js-cookie'; 
-
+import { getServerCookie } from "@/utils/serverCookie";
 const products = [
   {
     id: 1,
@@ -93,7 +92,7 @@ export default function ProductsCard() {
       quantity: 1,
     };
 
-    const token = Cookies.get('token');
+    const token = await getServerCookie('token');
 
     try {
       console.log(token);
@@ -126,7 +125,7 @@ export default function ProductsCard() {
           {products.map((product) => (
             <div
               key={product.id}
-              className="bg-white rounded-lg p-4 hover:shadow-xl"
+              className="bg-white rounded-lg p-4 hover:shadow-xl transition-[--tw-shadow] "
             >
               <Image
                 width={133}

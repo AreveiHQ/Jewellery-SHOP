@@ -77,8 +77,9 @@ export default function Login() {
                 Email/Number
               </label>
               <input
-                type="text"
+                type="email"
                 id="email"
+                autocomplete="email"
                 className="mt-1 block w-full px-3 py-2 bg-[#F2F2F2] border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
                 {...register("email")}
               />
@@ -99,6 +100,7 @@ export default function Login() {
               <input
                 type="password"
                 id="password"
+                autocomplete="current-password"
                 className="mt-1 block w-full px-3 py-2 bg-[#F2F2F2] border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
                 {...register("password")}
               />

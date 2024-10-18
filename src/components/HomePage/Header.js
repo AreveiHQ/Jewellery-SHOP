@@ -31,6 +31,7 @@ import Search from './Search.js';
 import ProfileMenu from './ProfileMenu.js';
 import NavList from './Navlist.js';
 import Cookies from 'js-cookie';
+import { getServerCookie } from '@/utils/serverCookie.js';
 
 export default function Header() {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -54,7 +55,7 @@ export default function Header() {
 
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = getServerCookie('token');
     setIsLoggedIn(!!token);
   }, []);
 
