@@ -1,6 +1,20 @@
+"use client"
+import axios from "axios";
+import Link from "next/link";
 
 
 const DeliveryForm = () => {
+
+  const handlePayment= async ()=>{
+        try{
+          const response=axios.post("/api/orders/");
+
+        }
+        catch{
+
+        }
+  }
+
   return (
     <div className="max-w-lg mx-auto p-4 text-black">
       {/* Delivery Section */}
@@ -90,10 +104,11 @@ const DeliveryForm = () => {
           className="border border-gray-100 bg-[#F2F2F2] text-black rounded-lg p-3 w-full  md:w-1/2"
         />
       </div>
-
+      <Link href="/checkout">
       <button className="bg-[#BC264B] hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-lg w-full">
         Proceed to Payment
       </button>
+      </Link>
     </div>
   );
 };

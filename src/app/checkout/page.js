@@ -69,6 +69,16 @@ export default function ShoppingCart() {
     fetchCartData();
   }, []);
 
+  const handleOrder=async ()=>{
+    const token = Cookies.get("token");
+    const response=await axios.post("/api/orders/",{
+      headers: {
+        Authorization: `Bearer ${token}`, // Include token in request headers
+      },
+      // data to be append;
+    })
+  }
+
   // const estimatedTotal = cartItems.reduce((acc, item) => acc + item.price, 0);
 
   // Remove item from cart
@@ -184,7 +194,8 @@ export default function ShoppingCart() {
 
         {/* Checkout Button */}
         <div className="mt-8">
-          <button className="w-full py-3 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600">
+          <button className="w-full py-3 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600"
+           onClick={handleOrder}>
             Checkout Securely
           </button>
         </div>
