@@ -1,6 +1,7 @@
 import Footer from "@/components/HomePage/Footer";
 import Header from "@/components/HomePage/Header";
 import NavBar from "@/components/HomePage/Navbar";
+import CategoryLoader from "@/components/Loaders/CategoryLoader";
 import { Button } from "@/MaterialTailwindNext";
 
 // components/CategoryGrid.js
@@ -47,7 +48,9 @@ export default function CategoryGrid() {
           </div>
         ))}
       </div>
+      <CategoryLoader/>
     </div>
+    
     <Footer/>
     </div>
   );

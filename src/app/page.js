@@ -9,6 +9,7 @@ import NavBar from "@/components/HomePage/Navbar";
 import ProductsCard from "@/components/HomePage/ProductsCard";
 import Testimonials from "@/components/HomePage/Testimonials";
 import Image from "next/image";
+import HomePageLoader from "@/components/Loaders/HomePageLoader";
 
 
 export default function HomePage() {
@@ -26,6 +27,7 @@ export default function HomePage() {
         </div>
         <Testimonials/>
       </main>
+      <HomePageLoader/>
       <Footer/>
     </div>
   );

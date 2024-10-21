@@ -9,6 +9,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";  
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie"; 
+import CheckoutLoader from "@/components/Loaders/CheckoutLoader";
 
 export default function ShoppingCart() {
   // const [cartItems, setCartItems] = useState([
@@ -188,6 +189,7 @@ export default function ShoppingCart() {
             Checkout Securely
           </button>
         </div>
+        <CheckoutLoader/>
       </div>
 
       <Footer />
