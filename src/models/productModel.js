@@ -1,30 +1,28 @@
-import mongoose from 'mongoose'
-
+import mongoose from 'mongoose';
 
 const reviewSchema = new mongoose.Schema({
   user: {
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
   },
   rating: {
     type: Number,
     required: true,
     min: 1,
-    max: 5
+    max: 5,
   },
   comment: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 }, {
-  timestamps: true
+  timestamps: true,
 });
 
 const subCategories = {
-  men: ['shirts', 'trousers', 'shoes'],
-  women: ['dresses', 'handbags', 'shoes'],
-  kids: ['toys', 'clothing', 'shoes'],
+  men: ['pendants', 'earrings', 'necklace', 'bracelets', 'sets', 'anklets'],
+  women: ['pendants', 'rings', 'bracelets', 'chains'],
 };
 
 const productSchema = new mongoose.Schema({
@@ -39,13 +37,13 @@ const productSchema = new mongoose.Schema({
     required: true,
     min: 0,
   },
-  discountPrice:{
+  discountPrice: {
     type: Number,
-    min:0
+    min: 0,
   },
   category: {
     type: String,
-    enum: ['men', 'women', 'kids'],
+    enum: ['men', 'women'],  // Updated to only men and women
     required: true,
   },
   subCategory: {
@@ -65,8 +63,7 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  
-  reviews: [reviewSchema], 
+  reviews: [reviewSchema],
   averageRating: {
     type: Number,
     default: 0,
@@ -78,5 +75,6 @@ const productSchema = new mongoose.Schema({
 }, {
   timestamps: true,
 });
-const Product =  mongoose.models.Product ||mongoose.model('Product', productSchema);
+
+const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
 export default Product;

@@ -56,7 +56,8 @@ export default function Header() {
 
   useEffect(() => {
     const token = getServerCookie('token');
-    setIsLoggedIn(!!token);
+    console.log(token)
+    console.log(setIsLoggedIn(!!token));
   }, []);
 
  

@@ -39,6 +39,7 @@ export default function ShoppingCart() {
 
       try {
         // Fetch the cart items
+        console.log(token);
         const itemsResponse = await axios.get("/api/cart", {
           headers: {
             Authorization: `Bearer ${token}`, // Include token in request headers
