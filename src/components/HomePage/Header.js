@@ -55,10 +55,15 @@ export default function Header() {
 
 
   useEffect(() => {
-    const token = getServerCookie('token');
-    console.log(token)
-    console.log(setIsLoggedIn(!!token));
+    const checkLoginStatus = async () => {
+      const token = await getServerCookie('token'); 
+      // console.log(token);
+      setIsLoggedIn(!!token); 
+    };
+
+    checkLoginStatus(); 
   }, []);
+
 
  
   return (

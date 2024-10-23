@@ -7,10 +7,11 @@ import Image from "next/image";
 import { Button } from "@/MaterialTailwindNext";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";  
-import "react-toastify/dist/ReactToastify.css";
-import Cookies from "js-cookie"; 
+import "react-toastify/dist/ReactToastify.css"; 
+import { getServerCookie } from "@/utils/serverCookie";
 
 export default function ShoppingCart() {
+
   // const [cartItems, setCartItems] = useState([
   //   {
   //     id: 1,
@@ -30,16 +31,16 @@ export default function ShoppingCart() {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [error, setError] = useState(null);
-
+  const [token, setToken] = useState(null);
 
   // Fetch cart items and total price from the backend
   useEffect(() => {
     const fetchCartData = async () => {
-      const token = Cookies.get("token"); 
-
+      const token = await getServerCookie('token');
+      setToken(token);
       try {
         // Fetch the cart items
-        console.log(token);
+        // console.log(token);
         const itemsResponse = await axios.get("/api/cart", {
           headers: {
             Authorization: `Bearer ${token}`, // Include token in request headers
@@ -57,12 +58,16 @@ export default function ShoppingCart() {
             Authorization: `Bearer ${token}`, // Include token in request headers
           },
         });
+        console.log("Total Response:", totalResponse.data);
+
         if (totalResponse.status === 200) {
-          setTotalPrice(totalResponse.data.total);  // Set the total price
+          console.log("Total:", totalResponse.data.total); // Log the total for debugging
+          setTotalPrice(parseFloat(totalResponse.data.total));  // Ensure you convert to a number
         } else {
           setError("Failed to fetch total price.");
         }
       } catch (err) {
+        console.error("Error fetching cart data", err.response ? err.response.data : err.message);
         setError("Server error while fetching cart data.");
       } 
     };
@@ -74,6 +79,7 @@ export default function ShoppingCart() {
 
   // Remove item from cart
   const handleRemoveFromCart = async (productId) => {
+    
     try {
       const response = await axios.delete("/api/cart/remove", {
         data: { productId },
@@ -150,7 +156,7 @@ export default function ShoppingCart() {
                         Add to Wishlist
                       </Button>
                       <Button
-                        className="mt-4 bg-white hover:bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm"
+                        className="mt-4 bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm"
                         onClick={() => handleRemoveFromCart(item._id)}
                       >
                         Remove
