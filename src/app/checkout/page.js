@@ -1,110 +1,91 @@
 "use client";
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 import Footer from "@/components/HomePage/Footer";
 import Header from "@/components/HomePage/Header";
 import NavBar from "@/components/HomePage/Navbar";
 import Image from "next/image";
 import { Button } from "@/MaterialTailwindNext";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";  
-import "react-toastify/dist/ReactToastify.css"; 
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { getServerCookie } from "@/utils/serverCookie";
 
 export default function ShoppingCart() {
-
-  // const [cartItems, setCartItems] = useState([
-  //   {
-  //     id: 1,
-  //     name: "Rose Gold Sparkling Infinity Pendant with Link Chain",
-  //     price: 543,
-  //     originalPrice: 1543,
-  //     image: "/images/prod1.png",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Rose Gold Sparkling Infinity Pendant with Link Chain",
-  //     price: 543,
-  //     originalPrice: 1543,
-  //     image: "/images/prod1.png",
-  //   },
-  // ]);
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [error, setError] = useState(null);
   const [token, setToken] = useState(null);
 
-  // Fetch cart items and total price from the backend
   useEffect(() => {
     const fetchCartData = async () => {
-      const token = await getServerCookie('token');
+      const token = await getServerCookie("token");
       setToken(token);
       try {
-        // Fetch the cart items
-        // console.log(token);
         const itemsResponse = await axios.get("/api/cart", {
           headers: {
-            Authorization: `Bearer ${token}`, // Include token in request headers
+            Authorization: `Bearer ${token}`,
           },
         });
         if (itemsResponse.status === 200) {
-          setCartItems(itemsResponse.data.items || []);
+          const items = itemsResponse.data.items || [];
+          setCartItems(items);
+          calculateTotal(items);
+          console.log(items); 
         } else {
           setError("Failed to fetch cart items.");
         }
-
-        // Fetch the total price
-        const totalResponse = await axios.get("/api/cart/price", {
-          headers: {
-            Authorization: `Bearer ${token}`, // Include token in request headers
-          },
-        });
-        console.log("Total Response:", totalResponse.data);
-
-        if (totalResponse.status === 200) {
-          console.log("Total:", totalResponse.data.total); // Log the total for debugging
-          setTotalPrice(parseFloat(totalResponse.data.total));  // Ensure you convert to a number
-        } else {
-          setError("Failed to fetch total price.");
-        }
       } catch (err) {
-        console.error("Error fetching cart data", err.response ? err.response.data : err.message);
+        console.error(
+          "Error fetching cart data",
+          err.response ? err.response.data : err.message
+        );
         setError("Server error while fetching cart data.");
-      } 
+      }
     };
 
     fetchCartData();
   }, []);
 
-  // const estimatedTotal = cartItems.reduce((acc, item) => acc + item.price, 0);
+  const formatPrice = (price) => {
+    return price ? `Rs.${parseFloat(price).toFixed(2)}` : "N/A";
+  };
 
-  // Remove item from cart
-  const handleRemoveFromCart = async (productId) => {
-    
+  const calculateTotal = (items) => {
+    const total = items.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 1), 0);
+    setTotalPrice(total);
+  };
+
+  const handleRemoveFromCart = async (itemId) => { 
+    console.log("Removing item with ID:", itemId);
     try {
       const response = await axios.delete("/api/cart/remove", {
-        data: { productId },
+        data: { productId: itemId },
         headers: {
-          Authorization: `Bearer ${token}`, // Include token in request headers
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.status === 200) {
-        
-        setCartItems(cartItems.filter((item) => item.id !== productId));
-        toast.error("Item removed from cart");
+        const updatedCartItems = cartItems.filter((item) => item._id !== itemId); 
+        setCartItems(updatedCartItems);
+        calculateTotal(updatedCartItems);
+        toast.success("Item removed from cart");
       } else {
         setError("Failed to remove item from the cart.");
       }
     } catch (error) {
+      console.error("Error removing item:", error.response ? error.response.data : error.message);
       setError("Server error while removing item from cart.");
     }
   };
 
-  return (
-    
+  useEffect(() => {
+    calculateTotal(cartItems);
+    console.log("Total price calculated:", totalPrice);
+  }, [cartItems]);
 
+  return (
     <>
-    
       <Header />
       <NavBar />
 
@@ -115,56 +96,52 @@ export default function ShoppingCart() {
 
         {/* Cart Items Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
           <div className="lg:col-span-2 space-y-6">
             {cartItems.length === 0 ? (
               <p>Your cart is empty.</p>
             ) : (
-              cartItems.map((item) => (
-                <div
-                  key={item._id}
-                  className="flex flex-col md:flex-row items-center border p-4 rounded-lg"
-                >
-                  {/* Product Image */}
-                  <Image
-                    height={96}
-                    width={96}
-                    src={item.productId.imageUrl}
-                    alt={item.productId.name}
-                    className="w-24 h-24 object-cover mr-4"
-                  />
-                  {/* Product Info */}
-                  <div className="flex-grow">
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-[#1E1E1E] font-semibold text-base">
-                        Rs.{item.price}
-                      </span>
-                      <span className="line-through text-[#F42222] text-xs">
-                        Rs.{item.originalPrice}
-                      </span>
-                    </div>
-                    <h2 className="font-semibold text-[#2A2A2A]">
-                      {item.productId.name}
-                    </h2>
-                    <p className="text-sm text-gray-500">
-                      Add gift wrap to your order (₹50)
-                    </p>
+              cartItems.map((item) => {
+                const productId = item.productId || {}; 
+                return (
+                  <div key={item._id} className="flex flex-col md:flex-row items-center border p-4 rounded-lg">
+                    <Image
+                      height={96}
+                      width={96}
+                      src={productId.imageUrl || "/images/Prod1.png"}
+                      alt={productId.name || "Product"}
+                      className="w-24 h-24 object-cover mr-4"
+                    />
+                    <div className="flex-grow">
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="text-[#1E1E1E] font-semibold text-base">
+                          {formatPrice(item.price)}
+                        </span>
+                        <span className="line-through text-[#F42222] text-xs">
+                          {formatPrice(item.originalPrice)}
+                        </span>
+                      </div>
+                      <h2 className="font-semibold text-[#2A2A2A]">
+                        {item.name || "Unknown Product"}
+                      </h2>
+                      <p className="text-sm text-gray-500">
+                        Add gift wrap to your order (₹50)
+                      </p>
 
-                    {/* Wishlist and Remove Buttons */}
-                    <div className="mt-4 md:mt-0 flex space-x-4 w-full">
-                      <Button className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm">
-                        Add to Wishlist
-                      </Button>
-                      <Button
-                        className="mt-4 bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm"
-                        onClick={() => handleRemoveFromCart(item._id)}
-                      >
-                        Remove
-                      </Button>
+                      <div className="mt-4 md:mt-0 flex space-x-4 w-full">
+                        <Button className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm">
+                          Add to Wishlist
+                        </Button>
+                        <Button
+                          className="mt-4 bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm"
+                          onClick={() => handleRemoveFromCart(item._id)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
 
@@ -173,8 +150,7 @@ export default function ShoppingCart() {
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
             <div className="flex justify-between mb-4">
               <span>Estimated Total:</span>
-              <span className="font-bold">₹{totalPrice}</span> {/* Display the total price */}
-            
+              <span className="font-bold">{formatPrice(totalPrice)}</span>
             </div>
             <div className="space-y-2">
               <input
@@ -189,7 +165,6 @@ export default function ShoppingCart() {
           </div>
         </div>
 
-        {/* Checkout Button */}
         <div className="mt-8">
           <button className="w-full py-3 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600">
             Checkout Securely
@@ -199,6 +174,5 @@ export default function ShoppingCart() {
 
       <Footer />
     </>
-
   );
 }
