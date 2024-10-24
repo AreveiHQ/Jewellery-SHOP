@@ -27,6 +27,8 @@ export default function Page() {
         <hr className='border-t-2 border-gray-400 w-3/4 lg:w-1/2 mx-auto mb-4 lg:mb-6' />
 
         {/* Palette of Color */}
+
+        
         <div className='w-full'>
           <h3 className='text-lg lg:text-2xl font-light text-center p-2 lg:p-4'>PALETTE OF COLOR</h3>
           <div className='flex flex-wrap justify-center gap-4 mb-4'>
