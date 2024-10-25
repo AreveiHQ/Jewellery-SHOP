@@ -1,14 +1,11 @@
 import { NextResponse } from 'next/server';
 import Product from '@/models/productModel';
-import applyDiscount from '@/utils/productDiscount';
 import { connect } from '@/dbConfig/dbConfig';
-import { Readable } from 'stream';
-
-import cloudinary from '@/utils/cloudinary';
+import { uploadToCloudinary } from '@/utils/cloudinary';
+import Category from '@/models/category';
+import calculatedDiscount from '@/utils/productDiscount';
 
 connect();
-// Utility function for error response
-const handleError = (error) => NextResponse.json({ message: error.message }, { status: 500 });
 
 // Get all products
 export async function GET() {
@@ -16,7 +13,7 @@ export async function GET() {
     const products = await Product.find().sort({ createdAt: -1 });
     return NextResponse.json({ products }, { status: 200 });
   } catch (error) {
-    return handleError(error);
+    return NextResponse.json({ message: error.message }, { status: 500 })
   }
 }
 
@@ -24,67 +21,54 @@ export async function GET() {
 export async function POST(request) {
   try {
     const formData = await request.formData();
+    const imageFiles = formData.getAll('images'); // Assumes the key for images is 'images'
     const name = formData.get('name');
     const description = formData.get('description');
     const price = formData.get('price');
+    const discountPrice = formData.get('discountPrice');
     const category = formData.get('category');
     const subCategory = formData.get('subCategory');
-    const brand = formData.get('brand');
-    const sizes = formData.get('sizes');
-    const colors = formData.get('colors');
+    const collection = formData.get('collection');
+    const metal = formData.get('metal');
     const stock = formData.get('stock');
-
     // Validate fields
-    if (!name || !price || !category) {
-      return NextResponse.json({ message: 'Name, price, and category are required' }, { status: 400 });
+    console.log(imageFiles.length,name,price,category,subCategory)
+    if (!imageFiles.length ||!name || !price || !category || !subCategory  ) {
+      return NextResponse.json({ message: 'Please fill required  fields' }, { status: 400 });
+    }
+    const isExist = await Category.findOne({ name:subCategory,parentCategory:category});
+    if (!isExist) {
+      return NextResponse.json({ message: 'Invalid Category' }, { status: 403 });
+    }
+    if (price <= 0 || discountPrice < 0 ) {
+      return NextResponse.json({ message: 'Invalid price or discounted price values' }, { status: 403 });
     }
 
-    const imageFiles = formData.getAll('images'); // Assumes the key for images is 'images'
-
     // Function to upload a single file to Cloudinary
-    const uploadToCloudinary = (buffer) => {
-      return new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { folder: 'Jewelry/products' },
-          (error, result) => {
-            if (error) {
-              reject(error);
-            } else {
-              resolve(result);
-            }
-          }
-        );
-
-        const readableStream = new Readable();
-        readableStream.push(buffer);
-        readableStream.push(null); // Signifies the end of the stream
-        readableStream.pipe(stream);
-      });
-    };
+    
 
     // Upload all image files to Cloudinary
     const uploadPromises = imageFiles.map(async (file) => {
       const buffer = Buffer.from(await file.arrayBuffer()); // Convert file to Buffer
-      return uploadToCloudinary(buffer); // Use the function to upload the Buffer
+      return uploadToCloudinary(buffer,'/product'); // Use the function to upload the Buffer
     });
 
     const results = await Promise.all(uploadPromises);
     const images = results.map((result) => result.secure_url);
 
     // Now create and save the product in the database
-    const discountPrice = applyDiscount(price, 5);
+    const discountPercent = calculatedDiscount(price,discountPrice);
 
     const product = new Product({
+      images,
       name,
       description,
       price,
       discountPrice,
-      category: category.toLowerCase(),
-      subCategory: subCategory.toLowerCase(),
-      brand,
-      sizes,
-      colors,
-      images,
+      discountPercent,
+      category:isExist._id,
+      collection,
+      metal,
       stock,
     });
 

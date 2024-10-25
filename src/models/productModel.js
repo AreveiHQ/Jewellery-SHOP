@@ -20,11 +20,6 @@ const reviewSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-const subCategories = {
-  men: ['pendants', 'earrings', 'necklace', 'bracelets', 'sets', 'anklets'],
-  women: ['pendants', 'rings', 'bracelets', 'chains'],
-};
-
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -39,25 +34,28 @@ const productSchema = new mongoose.Schema({
   },
   discountPrice: {
     type: Number,
+    required:true,
     min: 0,
   },
+  discountPercent:{
+    type:Number,
+    min:0,
+    max:100,
+    required:true
+  },
   category: {
-    type: String,
-    enum: ['men', 'women'],  // Updated to only men and women
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
+    ref: 'Category',
   },
-  subCategory: {
-    type: String,
-    validate: {
-      validator: function (value) {
-        return subCategories[this.category]?.includes(value);
-      },
-      message: (props) => `${props.value} is not a valid subcategory for ${props.instance.category}`,
-    },
+  collectionName:{
+    type:String,
   },
-  brand: String,
-  sizes: [String],
-  colors: [String],
+  metal: {
+     type:String,
+     enum:['silver','gold'],
+    default:'silver'
+  },
   images: [String],
   stock: {
     type: Number,

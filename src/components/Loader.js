@@ -17,7 +17,7 @@ const Loader = () => {
         <div className="flex items-center justify-center h-screen bg-background fixed inset-0 z-50">
             {showImg && (
                 <img
-                    src='./images/loader.svg' 
+                    src='/images/loader.svg' 
                     alt="Loading..."
                     className="w-32 h-32 animate-spin" 
                 />

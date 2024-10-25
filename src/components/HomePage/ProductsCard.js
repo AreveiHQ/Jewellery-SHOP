@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/MaterialTailwindNext";
 import Image from "next/image";
@@ -80,6 +80,25 @@ const categories = [
 
 export default function ProductsCard() {
   const [loadingProductId, setLoadingProductId] = useState(null);
+  const [getProducts,setProducts] = useState(null)
+  const handleGetProducts = async () => {
+    try {
+      const response = await axios.get("/api/products",{
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      console.log("Product Get", response.data.products);
+      setProducts(response.data.products)
+    } catch (err) {
+      console.error("Error getting product", err.response ? err.response.data : err.message);
+      toast.error("Failed to get product ");
+    } 
+  };
+  useEffect(()=>{
+    handleGetProducts();
+  },[])
 
   // const handleAddToCart = async (product) => {
 
@@ -133,7 +152,7 @@ export default function ProductsCard() {
     setLoadingProductId(product.id);
 
     // Clean the price values before sending to the server
-    const cleanPrice = parseFloat(product.price.replace(/[^0-9.-]+/g, ""));
+    const cleanPrice = parseFloat(product.price);
 
     const productData = {
       productId: product.id,
@@ -172,15 +191,15 @@ export default function ProductsCard() {
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Top Products</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {products.map((product) => (
+          {getProducts?.map((product) => (
             <div
-              key={product.id}
+              key={product._id}
               className="bg-white rounded-lg p-4 hover:shadow-xl transition-[--tw-shadow] "
             >
               <Image
                 width={133}
                 height={150}
-                src={product.imageUrl}
+                src={product.images[0]}
                 alt={product.name}
                 className="w-full h-52 object-cover rounded-lg mb-4"
               />
@@ -188,15 +207,15 @@ export default function ProductsCard() {
                 <div className="flex justify-between items-center gap-2 mt-2">
                   <div className="flex justify-center items-center gap-2">
                     <span className="text-[#1E1E1E] font-semibold text-base">
-                      {product.price}
+                      {product.discountPrice}
                     </span>
                     <span className="line-through text-[#F42222] text-xs">
-                      {product.oldPrice}
+                      {product.price}
                     </span>
                   </div>
                   <div className="text-sm text-gray-500 mt-2 flex justify-center items-center gap-2">
                     <span className="text-[#F42222]">★</span>
-                    <span>{product.rating}</span>
+                    {/* <span>{product.rating}</span> */}
                   </div>
                 </div>
                 <div className="text-gray-600">{product.name}</div>
@@ -204,9 +223,9 @@ export default function ProductsCard() {
               <Button
                 className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
                 onClick={() => handleAddToCart(product)}
-                disabled={loadingProductId === product.id}
+                disabled={loadingProductId === product._id}
               >
-                {loadingProductId === product.id ? "Adding..." : "Add to Cart"}
+                {loadingProductId === product._id ? "Adding..." : "Add to Cart"}
               </Button>
             </div>
           ))}

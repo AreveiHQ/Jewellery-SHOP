@@ -1,8 +1,4 @@
-function applyDiscount(sellingPrice, discount) {
-        if (discount && discount > 0) {
-          return sellingPrice - (sellingPrice * discount / 100);
-        }
-        return sellingPrice;
-    }
-    
- export default applyDiscount;
+export default function calculatedDiscount(price, discountedPrice) {
+  const discount = ((price - discountedPrice) / price) * 100;
+  return Math.ceil(discount);
+}

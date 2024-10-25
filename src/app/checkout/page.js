@@ -79,7 +79,6 @@ export default function ShoppingCart() {
   }, []);
 
   const handleOrder=async ()=>{
-    const token = Cookies.get("token");
     const response=await axios.post("/api/orders/",{
       headers: {
         Authorization: `Bearer ${token}`, // Include token in request headers
