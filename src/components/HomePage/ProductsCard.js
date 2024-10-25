@@ -81,18 +81,67 @@ const categories = [
 export default function ProductsCard() {
   const [loadingProductId, setLoadingProductId] = useState(null);
 
+  // const handleAddToCart = async (product) => {
+
+  //   const token = await getServerCookie('token');
+
+  //   // Check if the user is logged in
+  //   if (!token) {
+  //     toast.info("Please log in to add products to your cart!"); 
+  //     return;
+  //   }
+
+  //   setLoadingProductId(product.id);
+
+  //   const productData = {
+  //     productId: product.id,
+  //     img_src: product.imageUrl,
+  //     name: product.name,
+  //     price: product.price,
+  //     quantity: 1,
+  //   };
+
+  //   try {
+  //     console.log(token);
+  //     const response = await axios.post("/api/cart/add", productData, {
+  //       headers: {
+  //         'Authorization': `Bearer ${token}`,
+  //         'Content-Type': 'application/json',
+  //       },
+  //       withCredentials: true,
+  //     });
+      
+  //     console.log("Product added to cart:", response.data);
+  //     toast.success("Product added to cart!");
+  //   } catch (err) {
+  //     console.error("Error adding to cart:", err.response ? err.response.data : err.message);
+  //     toast.error("Failed to add product to cart!");
+  //   } finally {
+  //     setLoadingProductId(null);
+  //   }
+  // };
+
   const handleAddToCart = async (product) => {
+    const token = await getServerCookie('token');
+
+    // Check if the user is logged in
+    if (!token) {
+      toast.info("Please log in to add products to your cart!");
+      return;
+    }
+
     setLoadingProductId(product.id);
+
+    // Clean the price values before sending to the server
+    const cleanPrice = parseFloat(product.price.replace(/[^0-9.-]+/g, ""));
 
     const productData = {
       productId: product.id,
       img_src: product.imageUrl,
       name: product.name,
-      price: product.price,
+      price: cleanPrice, 
       quantity: 1,
     };
-
-    const token = await getServerCookie('token');
 
     try {
       console.log(token);
@@ -103,16 +152,17 @@ export default function ProductsCard() {
         },
         withCredentials: true,
       });
-      
+
       console.log("Product added to cart:", response.data);
       toast.success("Product added to cart!");
     } catch (err) {
-      console.error(err); 
+      console.error("Error adding to cart:", err.response ? err.response.data : err.message);
       toast.error("Failed to add product to cart!");
     } finally {
       setLoadingProductId(null);
     }
   };
+
 
   return (
     <div className="max-w-7xl mx-auto p-4">
