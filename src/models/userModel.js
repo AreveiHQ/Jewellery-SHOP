@@ -32,6 +32,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    addresses:[{
+        type:String,
+}],
     isVerified: {
         type: Boolean,
         default: false

@@ -151,18 +151,18 @@ export default function ProductsCard() {
       return;
     }
 
-    setLoadingProductId(product.id); // Use product.id here, not product._id
+    setLoadingProductId(product._id); // Use product.id here, not product._id
 
     // Clean the price values before sending to the server
-    const cleanPrice = parseFloat(product.price);
-
+    const cleanPrice = parseFloat(product.discountPrice);
     const productData = {
-      productId: product.id,
-      img_src: product.imageUrl,
+      productId: product._id,
+      img_src: product.images[0],
       name: product.name,
       price: cleanPrice, 
       quantity: 1,
     };
+    console.log(productData)
 
     try {
       console.log(token);

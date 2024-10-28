@@ -4,9 +4,12 @@ const nextConfig = {
     ignoreDuringBuilds: true,
 },
 images: {
-
-  domains: ['res.cloudinary.com']
-
+  remotePatterns: [
+    {
+      protocol: "https",
+      hostname: "res.cloudinary.com",
+    },
+  ],
 },
         webpack(config) {
           config.module.rules.push({

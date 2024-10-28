@@ -2,7 +2,8 @@ import jwt from 'jsonwebtoken';
 import { ForbiddenError } from '@/lib/errors';
 export  const UserAuth = (req)=>{
   try{
-    const headToken = req.headers.get('authorization');
+    const headToken = req.headers.get('Authorization');
+    console.log(headToken)
     if (!headToken || !headToken.startsWith('Bearer ')) {
       throw new ForbiddenError('Invalid Token');
     }

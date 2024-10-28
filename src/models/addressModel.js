@@ -6,6 +6,19 @@ const addressSchema = mongoose.Schema({
         ref:"User",
         required:true
     },
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    contact:{
+      type: Number,
+      length: 10,
+      required: true,
+    },
     street: {
         type: String,
         required: true,
@@ -29,23 +42,14 @@ const addressSchema = mongoose.Schema({
         required: true,
         match: /^[1-9][0-9]{5}$/,  
       },
-      country: {
-        type: String,
-        required: true,
-        enum: ['India'],
-      },
       landmark: {
         type: String,
         minlength: 3,
         maxlength: 100,
       },
-      apartmentNumber: {
-        type: String,
-        minlength: 1,
-        maxlength: 10,
-      }
+   
 });
 
-const Address=mongoose.model("Address",addressSchema);
+const Address=mongoose.models.Address || mongoose.model("Address",addressSchema);
 
 export default Address;

@@ -13,9 +13,9 @@ export async function DELETE(request) {
       return NextResponse.json({ message: 'Cart not found' }, { status: 404 });
     }
 
-    cart.items = cart.items.filter(item => item.productId.toString() !== productId);
-    await cart.save();
-
+    cart.items = cart.items.filter(item => item._id.toString() !== productId);
+    console.log(cart.items)
+    cart = await cart.save();
     return NextResponse.json(cart, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: 'Server error while removing product from cart' }, { status: 500 });

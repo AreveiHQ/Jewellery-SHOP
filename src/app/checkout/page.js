@@ -12,13 +12,14 @@ import { getServerCookie } from "@/utils/serverCookie";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie"; 
 import CheckoutLoader from "@/components/Loaders/CheckoutLoader";
+import { useRouter } from "next/navigation";
 
 export default function ShoppingCart() {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [error, setError] = useState(null);
   const [token, setToken] = useState(null);
-
+  const navigate = useRouter();
   useEffect(() => {
     const fetchCartData = async () => {
       const token = await getServerCookie("token");
@@ -50,6 +51,7 @@ export default function ShoppingCart() {
   }, []);
 
   const handleOrder=async ()=>{
+    const token = await getServerCookie("token");
     const response=await axios.post("/api/orders/",{
       headers: {
         Authorization: `Bearer ${token}`, // Include token in request headers
@@ -113,14 +115,13 @@ export default function ShoppingCart() {
               <p>Your cart is empty.</p>
             ) : (
               cartItems.map((item) => {
-                const productId = item.productId || {}; 
                 return (
                   <div key={item._id} className="flex flex-col md:flex-row items-center border p-4 rounded-lg">
                     <Image
                       height={96}
                       width={96}
-                      src={productId.imageUrl || "/images/Prod1.png"}
-                      alt={productId.name || "Product"}
+                      src={item.img_src }
+                      alt={item.name }
                       className="w-24 h-24 object-cover mr-4"
                     />
                     <div className="flex-grow">
@@ -128,9 +129,7 @@ export default function ShoppingCart() {
                         <span className="text-[#1E1E1E] font-semibold text-base">
                           {formatPrice(item.price)}
                         </span>
-                        <span className="line-through text-[#F42222] text-xs">
-                          {formatPrice(item.originalPrice)}
-                        </span>
+
                       </div>
                       <h2 className="font-semibold text-[#2A2A2A]">
                         {item.name || "Unknown Product"}
@@ -179,7 +178,7 @@ export default function ShoppingCart() {
 
         <div className="mt-8">
           <button className="w-full py-3 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600"
-           onClick={handleOrder}>
+           onClick={()=>navigate.push('/delivery')}>
             Checkout Securely
           </button>
         </div>

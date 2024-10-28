@@ -1,17 +1,43 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { razorpay_secret_key } from '@/utils/secrets';
-
+import Order from '@/models/orderModel';
+import Cart from '@/models/cartModel';
+import { UserAuth } from '@/utils/userAuth';
+import { connect } from '@/dbConfig/dbConfig';
+connect();
 export async function POST(req) {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await req.json();
-    const secret = razorpay_secret_key; // Use environment variables for sensitive data
-
+    const { paymentId, address, amount, orderId, signature } = await req.json();
+    const secret = process.env.RAZORPAY_SECRET; // Use environment variables for sensitive data
     const shasum = crypto.createHmac('sha256', secret);
-    shasum.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+    shasum.update(`${orderId}|${paymentId}`);
     const digest = shasum.digest('hex');
-    if (digest === razorpay_signature) {
-      return NextResponse.json({ message: 'Payment verified' }, { status: 200 });
+    if (digest === signature) {
+    const userId =  UserAuth(req); // Assume userId is set in middleware
+    const cart = await Cart.findOne({ userId }).populate('items.productId');
+    if (!cart) {
+      return NextResponse.json({ message: 'Cart not found' }, { status: 404 });
+    }
+    let order = await Order.findOne({ userId });
+    if (!order) {
+      order = new Order({ userId, orders: [] });
+    }
+    order.orders.push({
+      items: cart.items.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+      })),
+      paymentStatus: 'confirmed',
+      paymentId,
+      address,
+      orderStatus: 'confirmed',
+      amount,
+      signature,
+      orderId,
+    });
+    await order.save();
+    await Cart.findOneAndDelete({ userId }); // Clear the cart after placing the order
+    return NextResponse.json(order, { status: 201 });
     } else {
       return NextResponse.json({ message: 'Payment verification failed' }, { status: 400 });
     }
