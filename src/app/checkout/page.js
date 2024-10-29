@@ -9,10 +9,10 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getServerCookie } from "@/utils/serverCookie";
-import "react-toastify/dist/ReactToastify.css";
-import Cookies from "js-cookie"; 
 import CheckoutLoader from "@/components/Loaders/CheckoutLoader";
 import { useRouter } from "next/navigation";
+import Link from 'next/link';
+import { ShoppingBagIcon } from "@heroicons/react/24/solid";
 
 export default function ShoppingCart() {
   const [cartItems, setCartItems] = useState([]);
@@ -49,16 +49,6 @@ export default function ShoppingCart() {
 
     fetchCartData();
   }, []);
-
-  const handleOrder=async ()=>{
-    const token = await getServerCookie("token");
-    const response=await axios.post("/api/orders/",{
-      headers: {
-        Authorization: `Bearer ${token}`, // Include token in request headers
-      },
-      // data to be append;
-    })
-  }
 
   const formatPrice = (price) => {
     return price ? `Rs.${parseFloat(price).toFixed(2)}` : "N/A";
@@ -106,15 +96,30 @@ export default function ShoppingCart() {
       <div className="container mx-auto p-6">
         <h1 className="text-2xl font-semibold mb-6">Shopping Cart</h1>
 
-        {error && <p className="text-red-500">{error}</p>}
+    
 
         {/* Cart Items Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             {cartItems.length === 0 ? (
-              <p>Your cart is empty.</p>
+              <div className="flex flex-col items-center justify-center min-h-[50vh] text-center bg-gray-100 p-4">
+              <div className="bg-white p-6 rounded-full shadow-md">
+                <ShoppingBagIcon className="h-16 w-16 text-gray-400" />
+              </div>
+        
+              <h2 className="text-2xl font-semibold text-gray-700 mt-4">Your Cart is Empty</h2>
+              <p className="text-gray-500 mt-2">Looks like you haven't added anything to your cart yet.</p>
+        
+              <Link href="/shop">
+                <button className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-md shadow hover:bg-blue-700 transition duration-300">
+                  Continue Shopping
+                </button>
+              </Link>
+            </div>
             ) : (
-              cartItems.map((item) => {
+              <>    
+              {error && <p className="text-red-500">{error}</p>}
+              {cartItems.map((item) => {
                 return (
                   <div key={item._id} className="flex flex-col md:flex-row items-center border p-4 rounded-lg">
                     <Image
@@ -152,8 +157,10 @@ export default function ShoppingCart() {
                     </div>
                   </div>
                 );
-              })
-            )}
+              })}
+              </>
+            )
+            }
           </div>
 
           {/* Order Summary Section */}
@@ -176,12 +183,12 @@ export default function ShoppingCart() {
           </div>
         </div>
 
-        <div className="mt-8">
+        {cartItems.length ? <div className="mt-8">
           <button className="w-full py-3 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600"
            onClick={()=>navigate.push('/delivery')}>
             Checkout Securely
           </button>
-        </div>
+        </div>:""}
         <CheckoutLoader/>
       </div>
 

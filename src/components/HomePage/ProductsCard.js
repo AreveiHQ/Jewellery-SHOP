@@ -6,7 +6,7 @@ import Image from "next/image";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getServerCookie } from "@/utils/serverCookie";
-
+import Skel from '@skel-ui/react';
 
 const products = [
   {
@@ -96,8 +96,10 @@ export default function ProductsCard() {
     } catch (err) {
       console.error("Error getting product", err.response ? err.response.data : err.message);
       toast.error("Failed to get product ");
-    } 
+    }
+
   };
+ 
   useEffect(()=>{
     handleGetProducts();
   },[])
@@ -141,6 +143,9 @@ export default function ProductsCard() {
   //     setLoadingProductId(null);
   //   }
   // };
+  const formatPrice = (price) => {
+    return price ? `Rs.${parseFloat(price).toFixed(2)}` : "N/A";
+  };
 
   const handleAddToCart = async (product) => {
     const token = await getServerCookie('token');
@@ -186,39 +191,39 @@ export default function ProductsCard() {
 
 
   return (
-    <div className="max-w-7xl mx-auto p-4">
+    <div className="max-w-7xl mx-auto p-2 sm:p-4">
       {/* Top Products Section */}
       <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">Top Products</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {getProducts?.map((product) => (
+      {getProducts ? <><h2 className="text-2xl font-bold mb-6">Top Products</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-2 md:gap-y-4">
+          { getProducts?.map((product) => (
             <div
               key={product._id}
-              className="bg-white rounded-lg p-4 hover:shadow-xl transition-[--tw-shadow] "
+              className="bg-white rounded-lg p-2 md:p-4 hover:shadow-xl transition-[--tw-shadow] "
             >
               <Image
-                width={133}
-                height={150}
+                width={300}
+                height={300}
                 src={product.images[0]}
                 alt={product.name}
-                className="w-full h-52 object-cover rounded-lg mb-4"
+                className="w-full h-52 object-cover rounded-lg mb-4 "
               />
               <div className="px-1">
                 <div className="flex justify-between items-center gap-2 mt-2">
-                  <div className="flex justify-center items-center gap-2">
-                    <span className="text-[#1E1E1E] font-semibold text-base">
-                      {product.discountPrice}
+                  <div className="flex  items-center gap-x-2  line-clamp-1 w-[90%]">
+                    <span className="text-[#1E1E1E] font-semibold text-base ">
+                      {formatPrice(product.discountPrice)}
                     </span>
-                    <span className="line-through text-[#F42222] text-xs">
-                      {product.price}
+                    <span className="line-through text-[#F42222] text-xs  line-clamp-1">
+                      {formatPrice(product.price)}
                     </span>
                   </div>
-                  <div className="text-sm text-gray-500 mt-2 flex justify-center items-center gap-2">
+                  <div className="text-sm text-gray-500  flex justify-center items-center gap-2 w-[40px]">
                     <span className="text-[#F42222]">★</span>
-                    {/* <span>{product.rating}</span> */}
+                    <span>3.6</span>
                   </div>
                 </div>
-                <div className="text-gray-600">{product.itemName}</div>
+                <div className="text-gray-600 line-clamp-1">{product.name}</div>
               </div>
               <Button
                 className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
@@ -229,7 +234,23 @@ export default function ProductsCard() {
               </Button>
             </div>
           ))}
+        </div></> :<div>
+        <Skel.Item className="h-8 w-32 bg-gray-200 shimmer mb-4" /> 
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {Array(8).fill(0).map((_, index) => (
+            <div key={index} className="space-y-4">
+              <Skel.Item className="w-full h-56 bg-gray-200 shimmer rounded-lg" /> 
+              <div className="flex justify-between" >
+              <Skel.Item className="h-3 w-24 bg-gray-200 shimmer" /> 
+              <Skel.Item className="h-3 w-10 bg-gray-200 shimmer" /> 
+              </div>
+              <Skel.Item className="h-4 w-32 bg-gray-200 shimmer" />
+              <Skel.Item className="h-8 w-full rounded-md bg-gray-200 shimmer" />
+            </div>
+          ))}
         </div>
+      </div>}
       </section>
 
       {/* Shop by Category Section */}

@@ -50,3 +50,12 @@ export async function POST(request) {
     return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }
+
+export async function GET() {
+  try {
+    const products = await Category.find({},{name:1,image:1,_id:0});
+    return NextResponse.json(products, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ message: error.message }, { status: 500 })
+  }
+}

@@ -1,17 +1,17 @@
 const mongoose = require('mongoose');
 
 const homepageSchema = new mongoose.Schema({
-  images: [{
+  images: {
     type: String,
     required: true,
-  }],
-  links: [{
+  },
+  links: {
     type: String,
     required: true,
-  }],
+  },
   section:{
     type: String,
-    enum:["Hero","Grand Global","Medal Worthy"],
+    enum:["Hero Slider","About Slider","Medal Worthy"],
     required: true
   },
   createdAt: {
@@ -20,6 +20,5 @@ const homepageSchema = new mongoose.Schema({
   },
 });
 
-const Home = mongoose.model('Homepage', homepageSchema);
-
+const Home = mongoose.models.Homepage||mongoose.model('Homepage', homepageSchema);
 module.exports = Home;
