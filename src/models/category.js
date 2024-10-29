@@ -16,7 +16,7 @@ const categorySchema = mongoose.Schema({
         parentCategory:{
                 type:String,
                 required:true,
-                enum: ['men', 'women', 'kids'],
+                enum: ['rings', 'necklaces', 'earrings', 'bracelets', 'anklets', 'watches', 'other'],
         },
     
 })
