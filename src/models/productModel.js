@@ -52,9 +52,9 @@ const productSchema = new mongoose.Schema({
     type:String,
   },
   metal: {
-     type:String,
-     enum:['silver','gold'],
-    default:'silver'
+    type: String,
+    enum: ['silver', 'gold', 'platinum', 'rose gold'],
+    default: 'silver',
   },
   images: [String],
   stock: {

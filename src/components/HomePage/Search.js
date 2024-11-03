@@ -1,6 +1,18 @@
+import { useState } from "react";
 import { Button, Input } from "@material-tailwind/react";
+import { useRouter } from "next/navigation";
 
 export default function Search() {
+    const [searchQuery, setSearchQuery] = useState("");
+    const router = useRouter(); 
+
+   
+    const handleSearch = () => {
+        if (searchQuery) {
+            router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+        }
+    };
+
     return (
         <div className="hidden items-center gap-x-2 lg:flex w-max mx-auto">
             <div className="relative flex w-full gap-2 md:w-max">
@@ -14,6 +26,8 @@ export default function Search() {
                     labelProps={{
                         className: "before:content-none after:content-none",
                     }}
+                    value={searchQuery} 
+                    onChange={(e) => setSearchQuery(e.target.value)} 
                 />
                 <div className="!absolute left-3 top-[13px] text-gray-700">
                     <svg
@@ -37,7 +51,11 @@ export default function Search() {
                     </svg>
                 </div>
             </div>
-            <Button size="md" className="rounded-lg bg-pink-500">
+            <Button
+                size="md"
+                className="rounded-lg bg-pink-500"
+                onClick={handleSearch} 
+            >
                 Search
             </Button>
         </div>
