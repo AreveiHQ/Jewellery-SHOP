@@ -5,21 +5,11 @@ import {
   Collapse,
   Typography,
   Button,
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-  Card,
+
   IconButton,
   Badge
 } from "@/MaterialTailwindNext";
 import {
-  CubeTransparentIcon,
-  UserCircleIcon,
-  CodeBracketSquareIcon,
-  Square3Stack3DIcon,
-  ChevronDownIcon,
-  RocketLaunchIcon,
   Bars2Icon,
 } from "@heroicons/react/24/solid";
  import Store from '@/assets/Stores.svg'
@@ -30,12 +20,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import Search from './Search.js';
 import ProfileMenu from './ProfileMenu.js';
 import NavList from './Navlist.js';
-import Cookies from 'js-cookie';
 import { getServerCookie } from '@/utils/serverCookie.js';
+import { useRouter } from 'next/navigation.js';
 
 export default function Header() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const navigate = useRouter();
 
  
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
@@ -88,13 +79,13 @@ export default function Header() {
           <IconButton color="white" className="shadow-none">
             <Store />
           </IconButton>
-          <Link href="/checkout">
+          <div onClick={()=>navigate.push('/checkout')}>
             <Badge content="5" color="pink">
               <IconButton color="white" className="shadow-none">
                 <Cart />
               </IconButton>
             </Badge>
-          </Link>
+          </div>
 
           {/* Conditionally render ProfileMenu or Login button */}
           {isLoggedIn ? (

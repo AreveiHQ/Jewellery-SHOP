@@ -127,13 +127,15 @@ const DeliveryForm = () => {
   
 
   return (
-    <> <Script
+    <> 
+    <Script
     id="razorpay-checkout-js"
     src="https://checkout.razorpay.com/v1/checkout.js"
   />
-    <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto p-4 text-black">
+    <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto p-4 text-black space-y-4">
       {/* Delivery Section */}
       <h2 className="text-xl font-bold mb-4">Delivery</h2>
+      <div>
       <Controller
                 name="selectedDetails"
                 control={control}
@@ -150,27 +152,37 @@ const DeliveryForm = () => {
                   </Option>
                 ))}
         </Select>)}/>
-        
       {errors.addressSelect && <p className="text-red-500 text-sm">{errors.addressSelect.message}</p>}
-
+        </div>
+        
+        <div style={{display:isNewAddress?'block':'none'}}>
+      <div className="">
       <div>Name</div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div >
         <input
           {...register("firstName")}
           type="text"
           placeholder="First Name"
           className={`border bg-[#F2F2F2] text-black rounded-lg p-3 w-full ${errors.firstName ? "border-red-500" : "border-gray-100"}`}
         />
+      {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
+
+        </div>
+        <div>
         <input
           {...register("lastName")}
           type="text"
           placeholder="Last Name"
           className={`border bg-[#F2F2F2] text-black rounded-lg p-3 w-full ${errors.lastName ? "border-red-500" : "border-gray-100"}`}
         />
-      </div>
-      {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
       {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
 
+        </div>
+        </div>
+      </div>
+
+      <div>
       <div>Number</div>
       <input
         {...register("contact")}
@@ -179,15 +191,23 @@ const DeliveryForm = () => {
         className={`border bg-[#F2F2F2] text-black rounded-lg p-3 w-full md:w-1/2 ${errors.contact ? "border-red-500" : "border-gray-100"}`}
       />
       {errors.contact && <p className="text-red-500 text-sm">{errors.contact.message}</p>}
+      </div>
 
-      <div>Address</div>
+      <div>
+      <p>Address</p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
         <input
           {...register("street")}
           type="text"
           placeholder="Address Line 1, Flat No, Building Name"
           className={`border bg-[#F2F2F2] text-black rounded-lg p-3 w-full ${errors.street ? "border-red-500" : "border-gray-100"}`}
         />
+      {errors.street && <p className="text-red-500 text-sm">{errors.street.message}</p>}
+
+        </div>
+
+        <div>
         <input
           {...register("state")}
           type="text"
@@ -196,26 +216,35 @@ const DeliveryForm = () => {
           readOnly
           className="border bg-[#F2F2F2] text-gray-700 rounded-lg p-3 w-full"
         />
+      {errors.state && <p className="text-red-500 text-sm">{errors.state.message}</p>}
+        </div>
+
       </div>
-      {errors.street && <p className="text-red-500 text-sm">{errors.street.message}</p>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+      <div>
         <input
           {...register("landmark")}
           type="text"
           placeholder="Road, Area, Landmark"
           className={`border bg-[#F2F2F2] text-black rounded-lg p-3 w-full ${errors.landmark ? "border-red-500" : "border-gray-100"}`}
         />
+      {errors.landmark && <p className="text-red-500 text-sm">{errors.landmark.message}</p>}
+        </div>
+        <div>
         <input
           {...register("city")}
           type="text"
           placeholder="City"
           className={`border bg-[#F2F2F2] text-black rounded-lg p-3 w-full ${errors.city ? "border-red-500" : "border-gray-100"}`}
         />
-      </div>
       {errors.city && <p className="text-red-500 text-sm">{errors.city.message}</p>}
+      </div>
+      </div>
 
-      <div>postalCode</div>
+
+<div>
+      <p>postalCode</p>
       <input
         {...register("postalCode")}
         type="text"
@@ -223,12 +252,15 @@ const DeliveryForm = () => {
         className={`border bg-[#F2F2F2] text-black rounded-lg p-3 w-full md:w-1/2 ${errors.postalCode ? "border-red-500" : "border-gray-100"}`}
       />
       {errors.postalCode && <p className="text-red-500 text-sm">{errors.postalCode.message}</p>}
-
+      </div>
+      </div>
       <div className="mb-6">
         <label className="flex items-center space-x-2">
           <input type="checkbox" className="form-checkbox h-4 w-4 text-pink-600" />
           <span className="text-gray-700">Deliver as Gift</span>
         </label>
+      </div>
+
       </div>
 
       <h2 className="text-xl font-bold mb-4">Apply Coupon</h2>

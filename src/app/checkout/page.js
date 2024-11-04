@@ -15,7 +15,7 @@ import Link from 'next/link';
 import { ShoppingBagIcon } from "@heroicons/react/24/solid";
 
 export default function ShoppingCart() {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const [error, setError] = useState(null);
   const [token, setToken] = useState(null);
@@ -83,25 +83,19 @@ export default function ShoppingCart() {
     }
   };
 
-  useEffect(() => {
-    calculateTotal(cartItems);
-    console.log("Total price calculated:", totalPrice);
-  }, [cartItems]);
-
   return (
     <>
       <Header />
       <NavBar />
 
-      <div className="container mx-auto p-6">
+      {cartItems ?<div className="container mx-auto p-6">
         <h1 className="text-2xl font-semibold mb-6">Shopping Cart</h1>
 
-    
 
         {/* Cart Items Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            {cartItems.length === 0 ? (
+            {cartItems?.length === 0 ? (
               <div className="flex flex-col items-center justify-center min-h-[50vh] text-center bg-gray-100 p-4">
               <div className="bg-white p-6 rounded-full shadow-md">
                 <ShoppingBagIcon className="h-16 w-16 text-gray-400" />
@@ -119,7 +113,7 @@ export default function ShoppingCart() {
             ) : (
               <>    
               {error && <p className="text-red-500">{error}</p>}
-              {cartItems.map((item) => {
+              {cartItems?.map((item) => {
                 return (
                   <div key={item._id} className="flex flex-col md:flex-row items-center border p-4 rounded-lg">
                     <Image
@@ -183,14 +177,13 @@ export default function ShoppingCart() {
           </div>
         </div>
 
-        {cartItems.length ? <div className="mt-8">
+        {cartItems?.length ? <div className="mt-8">
           <button className="w-full py-3 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600"
            onClick={()=>navigate.push('/delivery')}>
             Checkout Securely
           </button>
         </div>:""}
-        <CheckoutLoader/>
-      </div>
+      </div>:<CheckoutLoader/> }
 
       <Footer />
     </>

@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getServerCookie } from "@/utils/serverCookie";
 import Skel from '@skel-ui/react';
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const products = [
   {
@@ -208,7 +210,7 @@ export default function ProductsCard() {
                 alt={product.name}
                 className="w-full h-52 object-cover rounded-lg mb-4 "
               />
-              <div className="px-1">
+              <Link href={`/product/${product._id}`} className="px-1">
                 <div className="flex justify-between items-center gap-2 mt-2">
                   <div className="flex  items-center gap-x-2  line-clamp-1 w-[90%]">
                     <span className="text-[#1E1E1E] font-semibold text-base ">
@@ -224,7 +226,7 @@ export default function ProductsCard() {
                   </div>
                 </div>
                 <div className="text-gray-600 line-clamp-1">{product.name}</div>
-              </div>
+              </Link>
               <Button
                 className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
                 onClick={() => handleAddToCart(product)}

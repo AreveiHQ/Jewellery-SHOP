@@ -1,11 +1,11 @@
 import Product from '@/models/productModel';
 import { connect } from '@/dbConfig/dbConfig';
-
+connect(); 
 export async function GET(req) {
-    const { search } = req.query; 
-
+    const { searchParams } = new URL(req.url); 
+    const search = searchParams.get('search');
     try {
-        await connect(); 
+        
 
         // Search for products where the name or description contains the search term
         const products = await Product.find({

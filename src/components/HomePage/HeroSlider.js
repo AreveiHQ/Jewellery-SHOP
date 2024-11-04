@@ -6,11 +6,11 @@ export default function HeroSlider({slides}) {
     <Carousel className=" cursor-pointer h-[clamp(12rem,30vw,40rem)]"
      autoplay autoplayDelay={10000} loop
     >
-      {slides?.map((item)=>  
+      {slides?.map((item,index)=>  
        {return <div className="relative h-full w-full">
         <Image width={900} height={300} 
           src={item.images}
-          alt="image 1"
+          alt={`Hero ${index}`}
           className="h-full w-full object-cover"
         />
       </div>})}

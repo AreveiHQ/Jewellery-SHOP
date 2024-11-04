@@ -6,14 +6,64 @@ import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import NavBar from "@/components/HomePage/Navbar";
 import Header from "@/components/HomePage/Header";
 import Footer from "@/components/HomePage/Footer";
+import { Button } from "@/MaterialTailwindNext";
+import Image from "next/image";
+import { getServerCookie } from "@/utils/serverCookie";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function SearchPage() {
     const [products, setProducts] = useState([]);
+  const [loadingProductId, setLoadingProductId] = useState(null);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const searchParams = useSearchParams();
     const query = searchParams.get("q");
-
+    const formatPrice = (price) => {
+        return price ? `Rs.${parseFloat(price).toFixed(2)}` : "N/A";
+      };
+      const handleAddToCart = async (product) => {
+        const token = await getServerCookie('token');
+    
+        // Check if the user is logged in
+        if (!token) {
+          toast.info("Please log in to add products to your cart!");
+          return;
+        }
+    
+        setLoadingProductId(product._id); // Use product.id here, not product._id
+    
+        // Clean the price values before sending to the server
+        const cleanPrice = parseFloat(product.discountPrice);
+        const productData = {
+          productId: product._id,
+          img_src: product.images[0],
+          name: product.name,
+          price: cleanPrice, 
+          quantity: 1,
+        };
+        console.log(productData)
+    
+        try {
+          console.log(token);
+          const response = await axios.post("/api/cart/add", productData, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+          });
+    
+          console.log("Product added to cart:", response.data);
+          toast.success("Product added to cart!");
+        } catch (err) {
+          console.error("Error adding to cart:", err.response ? err.response.data : err.message);
+          toast.error("Failed to add product to cart!");
+        } finally {
+          setLoadingProductId(null);
+        }
+      };
     useEffect(() => {
         if (query) {
             const fetchProducts = async () => {
@@ -40,7 +90,7 @@ export default function SearchPage() {
         <div className="min-h-screen bg-gray-50">
             <Header />
             <NavBar />
-            <div className="container mx-auto p-6">
+            <div className=" max-w-6xl mx-auto p-6">
                 <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Search Results for "{query}"</h1>
                 {loading ? (
                     <div className="flex justify-center items-center h-48">
@@ -53,14 +103,45 @@ export default function SearchPage() {
                         <span className="text-lg font-medium">Error: {error}</span>
                     </div>
                 ) : products.length > 0 ? (
-                    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-2 md:gap-y-4 gap-x-1">
                         {products.map((product) => (
-                            <li key={product._id} className="bg-white p-4 border rounded shadow-md hover:shadow-lg transition-shadow duration-200">
-                                <h2 className="text-xl font-semibold text-gray-800">{product.name}</h2>
-                                <p className="text-gray-600">{product.description}</p>
-                                <p className="text-green-600 font-bold mt-2">Price: ${product.price}</p>
-                            </li>
-                        ))}
+            <div
+              key={product._id}
+              className="bg-white rounded-lg p-2 md:p-4 hover:shadow-xl transition-[--tw-shadow] "
+            >
+              <Image
+                width={300}
+                height={300}
+                src={product.images[0]}
+                alt={product.name}
+                className="w-full h-52 object-cover rounded-lg mb-4 "
+              />
+              <div className="px-1">
+                <div className="flex justify-between items-center gap-2 mt-2">
+                  <div className="flex  items-center gap-x-2  line-clamp-1 w-[90%]">
+                    <span className="text-[#1E1E1E] font-semibold text-base ">
+                      {formatPrice(product.discountPrice)}
+                    </span>
+                    <span className="line-through text-[#F42222] text-xs  line-clamp-1">
+                      {formatPrice(product.price)}
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-500  flex justify-center items-center gap-2 w-[40px]">
+                    <span className="text-[#F42222]">★</span>
+                    <span>3.6</span>
+                  </div>
+                </div>
+                <div className="text-gray-600 line-clamp-1">{product.name}</div>
+              </div>
+              <Button
+                className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] transition-colors py-2 duration-300 px-4 rounded-md w-full capitalize text-sm"
+                onClick={() => handleAddToCart(product)}
+                disabled={loadingProductId === product._id}
+              >
+                {loadingProductId === product._id ? "Adding..." : "Add to Cart"}
+              </Button>
+            </div>
+          ))}
                     </ul>
                 ) : (
                     <div className="flex items-center p-4 mt-4 border border-red-500 bg-red-100 text-red-600 rounded shadow-md">

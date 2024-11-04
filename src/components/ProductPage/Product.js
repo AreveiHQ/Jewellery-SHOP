@@ -1,9 +1,12 @@
+"use client"
 import Image from "next/image";
 import product2 from "../../assets/product2.png";
 import RatingSVG from '../../assets/rating.svg'
-import { Button } from "@/MaterialTailwindNext";
+import { Button, Carousel } from "@/MaterialTailwindNext";
 import Customers from "./Customers";
-
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 const products = [
     {
       id: 1,
@@ -72,14 +75,33 @@ const products = [
     // Add more products...
   ];
 
-export default function Product() {
+export default function Product({id}) {
+    const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    if (id) {
+      const fetchProduct = async () => {
+        try {
+          const response = await axios.get(`/api/products/${id}`);
+          setProduct(response.data);
+          console.log(response.data)
+        } catch (error) {
+          setError('Error fetching product');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchProduct();
+    }
+  }, [id]);
     return (
-        <div className="grid grid-cols-1 align-top md:grid-cols-2 p-7">
+        <div className="flex flex-col lg:flex-row">
             <div>
-            <ProductImageSection />
+            <ProductImageSection images={product?.images?product.images:[]}/>
             </div>
             <div>
-            <ProductInfo />
+            <ProductInfo info={product} />
             <Products/>
             <Customers/>
             </div>
@@ -87,25 +109,39 @@ export default function Product() {
     );
 }
 
-function ProductImageSection() {
+function ProductImageSection({images}) {
     return (
-        <div className="p-3 bg-[#F3F3F3] rounded-md md:mx-9 md:w-[449px] md:h-[528px]">
+        <div className="p-3 bg-[#F3F3F3] rounded-md md:mx-9  sticky top-24">
             <div className="flex item-center justify-center rounded-md p-2">
-
-                <Image
-                    src={product2}
-                    alt="Product"
+            <Carousel
+            className="rounded-xl w-[500px]  md:w-[449px] md:h-[528px] max-w-[500px] md:max-w-none"
+            navigation={({ setActiveIndex, activeIndex }) => (
+                <div className="absolute bottom-0 left-2/4 z-50 flex -translate-x-2/4 gap-2">
+                {images.map((img, i) => (
+                    <Image
+                    width={500}
+                    height={500}
+                    src={img}
+                    key={i}
+                    className={`block my-auto cursor-pointer rounded-2xl transition-all content-[''] border-2 ${
+                        activeIndex === i ? "w-16 h-16  bg-white border-pink-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
+                    }`}
+                    onClick={() => setActiveIndex(i)}
+                    />
+                ))}
+                </div>
+            )}
+            >
+                {images.map((img,ind)=><Image
+                width={400}
+                height={400}
+                    src={img}
+                    alt={`Product${ind}`}
                     className="object-contain w-full h-auto"
-                />
+                />)}
+                </Carousel>
             </div>
-            <ImageThumbnails />
-        </div>
-    );
-}
-
-function ImageThumbnails() {
-    return (
-        <div className="flex justify-center mt-4 gap-2">
+            {/* <div className="flex justify-center mt-4 gap-2">
             {Array(4)
                 .fill("")
                 .map((_, index) => (
@@ -114,15 +150,18 @@ function ImageThumbnails() {
                         className="w-16 h-16 bg-gray-300 border border-gray-300"
                     ></div>
                 ))}
+        </div> */}
         </div>
     );
 }
 
-function ProductInfo() {
+
+
+function ProductInfo({info}) {
     return (
         <div className="p-4">
             <h2 className="text-xl font-semibold">
-                Rose Gold Sparkling Infinity Pendant with Link Chain
+                {info?.name}
             </h2>
             <div className="flex py-2">
                 <p className="text-sm text-gray-600">Made with 925 Silver |</p>
@@ -132,58 +171,17 @@ function ProductInfo() {
             <div className="mt-2">
                 <span className="p-2 bg-[#D9D9D9] rounded text-sm">★ 4.8</span>
             </div>
-            <Description />
-            <ProductFeatures />
-            <Actions />
-        </div>
-    );
-}
-
-function Description() {
-    return (
-        <div className="mt-4">
+            <div className="mt-4">
             <h3 className="text-md font-semibold ">Description</h3>
-            <div className="bg-[#F6F6F6] p-3 rounded-md">
-                <p className="text-md">
-                    <strong>The Inspiration :</strong> <br />This necklace can be a great way of
-                    telling your sweetheart that you love her to infinity and beyond. It
-                    sure will be a special gift.
-                </p>
-                <div className="text-md mt-3">
-                    <strong>The Design:</strong><br></br>This rose gold pendant with a link chain
-                    features a heart motif studded with zircons and an infinity motif
-                    interconnected.
-                    <br />
-                    
-                        <li>925 Silver with Rose Gold Plating...</li>
-                   
-                </div>
+            <div className="bg-[#F6F6F6] p-3 rounded-md" dangerouslySetInnerHTML={{__html:info?.description}}>
+               
             </div>
             <div className="mt-4">
                 <button className="text-[#BC264B] text-sm mx-3 underline">See the Offers</button>
             </div>
         </div>
-    );
-}
-
-function ProductFeatures() {
-    return (
-        <div className="grid grid-cols-2 gap-4 mt-4 mx-2 text-sm">
-            <FeatureItem label="Easy 30 Day Return" />
-            <FeatureItem label="Lifetime Plating" />
-            <FeatureItem label="925 Silver" />
-            <FeatureItem label="6-Month Warranty" />
-        </div>
-    );
-}
-
-function FeatureItem({ label }) {
-    return <div className="font-semibold">{label}</div>;
-}
-
-function Actions() {
-    return (
-        <div className="mt-6">
+            <ProductFeatures />
+            <div className="mt-6">
             <p className="mb-2 mt-2 text-xl font-semibold">Check our Pincode</p>
             <input
                 type="text"
@@ -211,8 +209,27 @@ function Actions() {
                 </button>
             </div>
         </div>
+        </div>
     );
 }
+
+
+function ProductFeatures() {
+    return (
+        <div className="grid grid-cols-2 gap-4 mt-4 mx-2 text-sm">
+            <FeatureItem label="Easy 30 Day Return" />
+            <FeatureItem label="Lifetime Plating" />
+            <FeatureItem label="925 Silver" />
+            <FeatureItem label="6-Month Warranty" />
+        </div>
+    );
+}
+
+function FeatureItem({ label }) {
+    return <div className="font-semibold">{label}</div>;
+}
+
+
 
 function Products() {
     return (
@@ -221,7 +238,7 @@ function Products() {
            You May Also Like it
            </div>
             <div>
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-y-2 md:gap-y-4">
         {products.map((product) => (
             <div
                 key={product.id}

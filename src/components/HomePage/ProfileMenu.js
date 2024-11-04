@@ -65,6 +65,25 @@ function ProfileMenu() {
                 </Button>
             </MenuHandler>
             <MenuList className="p-1">
+            <div className="flex items-center gap-3 px-4 py-3">
+                <div className="relative aspect-square w-10 rounded-full">
+                  <img
+                    src="https://cdn.tailgrids.com/2.2/assets/core-components/images/account-dropdowns/image-1.jpg"
+                    alt="account"
+                    className="w-full rounded-full object-cover object-center"
+                  />
+                  <span className="absolute -right-0.5 -top-0.5 block h-3.5 w-3.5 rounded-full border-2 border-white bg-green dark:border-dark"></span>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-dark dark:text-white">
+                    Andrio Miller
+                  </p>
+                  <p className="text-sm text-body-color dark:text-dark-6">
+                    miller@company.com
+                  </p>
+                </div>
+              </div>
+              
                 {profileMenuItems.map(({ label, icon }, key) => {
                     const isLastItem = key === profileMenuItems.length - 1;
                     return (
