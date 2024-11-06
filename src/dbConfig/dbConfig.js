@@ -1,9 +1,11 @@
+import Product from '@/models/productModel';
 import mongoose from 'mongoose'
 let isConnected = false;
 export async function connect() {
         try{
         if (isConnected) {
                         console.log('Using existing database connection');
+                        Product.createIndexes({ name: "text", description: "text", category:"text",subCategory:"text",collection:"text"})
                         return;
         }
         mongoose.connect(process.env.MONGO_URI);

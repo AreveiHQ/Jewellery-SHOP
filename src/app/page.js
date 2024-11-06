@@ -1,5 +1,5 @@
 // src/app/page.js
-
+"use client"
 import Footer from "@/components/HomePage/Footer";
 import Banner from "@/components/HomePage/Banner";
 import ProductCategories from "@/components/HomePage/Category";
@@ -10,12 +10,29 @@ import ProductsCard from "@/components/HomePage/ProductsCard";
 import Testimonials from "@/components/HomePage/Testimonials";
 import Image from "next/image";
 import HomePageLoader from "@/components/Loaders/HomePageLoader";
+import ProductList from "@/components/HomePage/ProductList";
+import { useState } from "react";
 
 
 export default function HomePage() {
+  const [products, setProducts] = useState([]);
+
+  const handleSearch = async (query) => {
+    if (!query) return setProducts([]);
+
+    const res = await fetch(`/api/search?query=${query}`);
+    const data = await res.json();
+    setProducts(data);
+  };
+
   return (
     <div>
-      <Header />
+      <Header onSearch={handleSearch} />
+      {products.length > 0 && (
+        <div className="product-list-container">
+          <ProductList products={products} />
+        </div>
+      )}
       <NavBar />
       <main>
         <HeroSlider/>

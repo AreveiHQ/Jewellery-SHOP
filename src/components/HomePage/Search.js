@@ -1,6 +1,49 @@
+"use client";
 import { Button, Input } from "@material-tailwind/react";
+import { useState, useEffect } from "react";
+import debounce from "lodash/debounce";
+import { CiSearch } from "react-icons/ci";
+
+import ProductList from "./ProductList"; 
 
 export default function Search() {
+    const [query, setQuery] = useState("");
+    const [products, setProducts] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+
+  
+    const handleSearch = debounce(async (query) => {
+        if (query) {
+            const res = await fetch(`/api/search?query=${query}`);
+            const data = await res.json();
+            setProducts(data);
+        }
+    }, 500);
+
+   
+    const fetchSuggestions = async (query) => {
+        if (query) {
+            const res = await fetch(`/api/autocomplete?query=${query}`);
+            const data = await res.json();
+            setSuggestions(data);
+        } else {
+            setSuggestions([]);
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        setQuery(value);
+        fetchSuggestions(value); // Fetch suggestions on input change
+        handleSearch(value); // Fetch search results with debounced function
+    };
+
+    const handleSuggestionClick = (suggestion) => {
+        setQuery(suggestion);
+        setSuggestions([]); // Hide suggestions after selection
+        handleSearch(suggestion); // Trigger search with selected suggestion
+    };
+
     return (
         <div className="hidden items-center gap-x-2 lg:flex w-max mx-auto">
             <div className="relative flex w-full gap-2 md:w-max">
@@ -14,32 +57,36 @@ export default function Search() {
                     labelProps={{
                         className: "before:content-none after:content-none",
                     }}
+                    value={query}
+                    onChange={handleInputChange}
                 />
                 <div className="!absolute left-3 top-[13px] text-gray-700">
-                    <svg
-                        width="13"
-                        height="14"
-                        viewBox="0 0 14 15"
-                        fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            d="M9.97811 7.95252C10.2126 7.38634 10.3333 6.7795 10.3333 6.16667C10.3333 4.92899 9.84167 3.742 8.9665 2.86683C8.09133 1.99167 6.90434 1.5 5.66667 1.5C4.42899 1.5 3.242 1.99167 2.36683 2.86683C1.49167 3.742 1 4.92899 1 6.16667C1 6.7795 1.12071 7.38634 1.35523 7.95252C1.58975 8.51871 1.93349 9.03316 2.36683 9.4665C2.80018 9.89984 3.31462 10.2436 3.88081 10.4781C4.447 10.7126 5.05383 10.8333 5.66667 10.8333C6.2795 10.8333 6.88634 10.7126 7.45252 10.4781C8.01871 10.2436 8.53316 9.89984 8.9665 9.4665C9.39984 9.03316 9.74358 8.51871 9.97811 7.95252Z"
-                            fill="currentColor"
-                        />
-                        <path
-                            d="M13 13.5L9 9.5M10.3333 6.16667C10.3333 6.7795 10.2126 7.38634 9.97811 7.95252C9.74358 8.51871 9.39984 9.03316 8.9665 9.4665C8.53316 9.89984 8.01871 10.2436 7.45252 10.4781C6.88634 10.7126 6.2795 10.8333 5.66667 10.8333C5.05383 10.8333 4.447 10.7126 3.88081 10.4781C3.31462 10.2436 2.80018 9.89984 2.36683 9.4665C1.93349 9.03316 1.58975 8.51871 1.35523 7.95252C1.12071 7.38634 1 6.7795 1 6.16667C1 4.92899 1.49167 3.742 2.36683 2.86683C3.242 1.99167 4.42899 1.5 5.66667 1.5C6.90434 1.5 8.09133 1.99167 8.9665 2.86683C9.84167 3.742 10.3333 4.92899 10.3333 6.16667Z"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
+                    <CiSearch />
                 </div>
+                {/* Autocomplete dropdown */}
+                {suggestions.length > 0 && (
+                    <div className="absolute top-full mt-1 w-full bg-white border border-gray-300 rounded shadow-md z-10">
+                        {suggestions.map((suggestion, index) => (
+                            <div
+                                key={index}
+                                onClick={() => handleSuggestionClick(suggestion)}
+                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            >
+                                {suggestion}
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
-            <Button size="md" className="rounded-lg bg-pink-500">
+            <Button
+                size="md"
+                className="rounded-lg bg-pink-500"
+                onClick={() => handleSearch(query)}
+            >
                 Search
             </Button>
+            
+            <ProductList products={products} />
         </div>
     );
 }

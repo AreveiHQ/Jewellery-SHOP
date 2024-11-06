@@ -11,7 +11,8 @@ import {
   MenuItem,
   Card,
   IconButton,
-  Badge
+  Badge,
+  Input
 } from "@/MaterialTailwindNext";
 import {
   CubeTransparentIcon,
@@ -32,13 +33,27 @@ import ProfileMenu from './ProfileMenu.js';
 import NavList from './Navlist.js';
 import Cookies from 'js-cookie';
 import { getServerCookie } from '@/utils/serverCookie.js';
+import debounce from "lodash/debounce";
+import { CiSearch } from 'react-icons/ci';
 
-export default function Header() {
+export default function Header({onSearch}) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
 
  
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
+
+  const [query, setQuery] = useState("");
+
+  const handleInputChange = (e) => {
+    const newQuery = e.target.value;
+    setQuery(newQuery);
+    handleSearch(newQuery);
+  };
+
+  const handleSearch = debounce((query) => {
+    onSearch(query);
+  }, 500);
  
   useEffect(() => {
     const handleResize = () => {
@@ -74,7 +89,9 @@ export default function Header() {
         <Typography as="a" href="#" className="mr-4 ml-2 cursor-pointer py-1.5 font-medium">
           <Image width={80} height={80} src="/images/jenii1.png" alt="" />
         </Typography>
-        <Search />
+        {/*  */}
+        <Search/>
+        {/*  */}
         <IconButton
           size="sm"
           color="blue-gray"
