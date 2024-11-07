@@ -84,12 +84,10 @@ export default function Product({id}) {
         try {
           const response = await axios.get(`/api/products/${id}`);
           setProduct(response.data);
-          console.log(response.data)
+        //   console.log(response.data)
         } catch (error) {
           setError('Error fetching product');
-        } finally {
-          setLoading(false);
-        }
+        } 
       };
 
       fetchProduct();
@@ -103,7 +101,7 @@ export default function Product({id}) {
             <div>
             <ProductInfo info={product} />
             <Products/>
-            <Customers/>
+            <Customers productId={id} />
             </div>
         </div>
     );
