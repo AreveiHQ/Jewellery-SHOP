@@ -10,7 +10,8 @@ export async function GET(req) {
     
     try {
         const results = await Product.find({ $text: { $search: query } });
-        return NextResponse.json(results);
+        let names=results.map((e)=>e.name)
+        return NextResponse.json(names);
     } catch (error) {
         return NextResponse.json({ error: "Error fetching products" }, { status: 500 });
     }
