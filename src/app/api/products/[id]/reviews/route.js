@@ -6,11 +6,10 @@ import { getServerCookie } from '@/utils/serverCookie';
 
 connect();
 
-const JWT_SECRET = process.env.JWT_SECRET;
 
 // Create a review for a specific product
 export async function POST(request, { params }) {
-  const { id } = params;
+  const {id} =  await params;
   const { rating, comment } = await request.json();
 
   if (!rating || !comment || rating < 1 || rating > 5) {
@@ -25,7 +24,7 @@ export async function POST(request, { params }) {
     }
 
    
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     // console.log('Decoded JWT:', decoded);
     const userId = decoded?.userId;
 
@@ -64,7 +63,7 @@ export async function POST(request, { params }) {
 
 // Get all reviews for a specific product
 export async function GET(request, { params }) {
-  const { id } = params;
+  const {id} = await params;
 
   try {
     const product = await Product.findById(id).populate('reviews.user', 'name');

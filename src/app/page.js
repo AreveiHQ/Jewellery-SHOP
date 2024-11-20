@@ -66,7 +66,7 @@ export default function HomePage() {
         {!slideLoader ? <Banner slides={getSlides}/> :<div className=" h-[clamp(8rem,16vw,26rem)] w-[96%] bg-gray-200 shimmer rounded-lg mx-auto"/>}
         <ProductsCard/>
         <div className="w-full overflow-auto">
-          <Image width={900} height={400}  src="/images/Flower.png" className="object-cover w-full" alt="" />
+          <Image width={900} height={400}  src="/images/Flower.png" className="object-cover w-full" alt="flower" />
         </div>
         <Testimonials/>
       </main>

@@ -3,11 +3,11 @@ import Image from "next/image";
  
 export default function HeroSlider({slides}) {
   return (
-    <Carousel className=" cursor-pointer h-[clamp(12rem,30vw,40rem)]"
+    <Carousel className=" cursor-pointer bg-blue-gray-50 h-[clamp(12rem,30vw,40rem)]"
      autoplay autoplayDelay={10000} loop
     >
       {slides?.map((item,index)=>  
-       {return <div className="relative h-full w-full">
+       {return <div className="relative h-full w-full" key={index}>
         <Image width={900} height={300} 
           src={item.images}
           alt={`Hero ${index}`}

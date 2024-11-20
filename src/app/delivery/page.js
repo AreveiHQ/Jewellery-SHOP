@@ -1,5 +1,4 @@
 import DeliveryForm from "@/components/Delivery/DeliveryForm";
-import Header from "@/components/HomePage/Header";
 
 import OrderCart from "../../components/Delivery/OrderCart";
 import NavBar from "@/components/HomePage/Navbar";
@@ -9,7 +8,6 @@ import DeliveryLoader from "@/components/Loaders/DeliveryLoader";
 export default function AddressPage() {
   return (
     <div className="">
-      <Header/>
       <NavBar/>
       <main className="">
       <div className="flex flex-col md:grid grid-cols-2">

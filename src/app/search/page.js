@@ -70,7 +70,7 @@ export default function SearchPage() {
                 setLoading(true);
                 setError(null);
                 try {
-                    const response = await fetch(`/api/search?search=${query}`);
+                    const response = await fetch(`/api/searches?search=${query}`);
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }

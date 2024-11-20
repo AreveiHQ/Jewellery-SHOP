@@ -157,10 +157,10 @@ export default function AddNewProduct() {
       // Add images
       Array.from(formData.images).forEach((image) => form.append("images", image));
 
-      const response = await axios.post("/api/products", form, {
+      await axios.post("/api/products", form, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
+      document.querySelector(".postform").classList.remove("jadu");
       toast.success("Product added successfully!");
       reset(); // Reset form after successful submission
     } catch (error) {

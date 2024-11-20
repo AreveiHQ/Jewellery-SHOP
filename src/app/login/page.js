@@ -2,8 +2,9 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import Header from "@/components/HomePage/Header";
-import NavBar from "@/components/HomePage/Navbar";
+import dynamic from 'next/dynamic';
+const NavBar = dynamic(() => import('@/components/HomePage/Navbar'), { ssr: false });
+
 
 import Link from "next/link";
 import axiosInstance from "@/utils/axiosInstance";
@@ -60,8 +61,8 @@ export default function Login() {
 
   return (
     <>
-      <Header />
       <NavBar />
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar />
 
       <div className="flex justify-center items-center min-h-[80vh] py-10 bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
@@ -79,7 +80,7 @@ export default function Login() {
               <input
                 type="email"
                 id="email"
-                autocomplete="email"
+                autoComplete="email"
                 className="mt-1 block w-full px-3 py-2 bg-[#F2F2F2] border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
                 {...register("email")}
               />

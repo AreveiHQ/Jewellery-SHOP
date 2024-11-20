@@ -5,20 +5,20 @@ import debounce from "lodash/debounce";
 import { CiSearch } from "react-icons/ci";
 
 import ProductList from "./ProductList"; 
+import { useRouter } from "next/navigation";
 
 export default function Search() {
     const [query, setQuery] = useState("");
     const [products, setProducts] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
+    const router = useRouter();
 
   
-    const handleSearch = debounce(async (query) => {
+    const handleSearch = (query) => {
         if (query) {
-            const res = await fetch(`/api/search?query=${query}`);
-            const data = await res.json();
-            setProducts(data);
+            router.push(`/search?q=${encodeURIComponent(query)}`);
         }
-    }, 500);
+    };
 
    
     const fetchSuggestions = async (query) => {
@@ -35,7 +35,6 @@ export default function Search() {
         const value = e.target.value;
         setQuery(value);
         fetchSuggestions(value); // Fetch suggestions on input change
-        handleSearch(value); // Fetch search results with debounced function
     };
 
     const handleSuggestionClick = (suggestion) => {

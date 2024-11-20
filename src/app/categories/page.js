@@ -1,5 +1,4 @@
 import Footer from "@/components/HomePage/Footer";
-import Header from "@/components/HomePage/Header";
 import NavBar from "@/components/HomePage/Navbar";
 import CategoryLoader from "@/components/Loaders/CategoryLoader";
 import { Button } from "@/MaterialTailwindNext";
@@ -20,7 +19,6 @@ export default function CategoryGrid() {
 
   return (
      <div>
-        <Header/>
         <NavBar/>
     <div className="space-y-8 container mx-auto my-10">
       {/* Categories Section */}

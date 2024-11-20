@@ -9,7 +9,7 @@ export async function GET(req) {
     console.log(query);
     
     try {
-        const results = await Product.find({ $text: { $search: query } });
+        const results = await Product.find({ $text: { $search: query,$caseSensitive:false,$diacriticSensitive:false  } });
         let names=results.map((e)=>e.name)
         return NextResponse.json(names);
     } catch (error) {

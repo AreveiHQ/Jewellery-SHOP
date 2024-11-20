@@ -8,6 +8,7 @@ export default function Banner({slides}) {
      >
       {slides?.map((item,index)=>  
        {return <Image width={900} height={300} 
+       key={index}
          src={item.images}
          alt={`Banner ${index}`}
          className="h-full w-full object-cover"

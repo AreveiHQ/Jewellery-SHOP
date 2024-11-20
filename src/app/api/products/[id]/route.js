@@ -4,7 +4,7 @@ import { connect } from '@/dbConfig/dbConfig';
 connect();
 // Get a product by ID
 export async function GET(request, { params }) {
-  const { id } = params;
+  const { id } =  await params;
 
   try {
     const product = await Product.findById(id);
@@ -19,7 +19,7 @@ export async function GET(request, { params }) {
 
 // Update a product by ID
 export async function PUT(request, { params }) {
-  const { id } = params;
+  const { id } = await params;
   const updates = await request.json();
 
   // Validate category if present
@@ -44,7 +44,7 @@ export async function PUT(request, { params }) {
 
 // Delete a product by ID
 export async function DELETE(request, { params }) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const deletedProduct = await Product.findByIdAndDelete(id);

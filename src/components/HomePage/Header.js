@@ -5,10 +5,8 @@ import {
   Collapse,
   Typography,
   Button,
-
   IconButton,
   Badge,
-  Input
 } from "@/MaterialTailwindNext";
 import {
   Bars2Icon,
@@ -17,15 +15,17 @@ import {
  import Cart from '@/assets/Cart.svg'
 import Link from "next/link";
 import Image from "next/image";
+import jwt from "jsonwebtoken";
 import 'react-toastify/dist/ReactToastify.css';
-import Search from './Search.js';
-import ProfileMenu from './ProfileMenu.js';
-import NavList from './Navlist.js';
+import dynamic from 'next/dynamic';
+const ProfileMenu = dynamic(() => import('./ProfileMenu'));
+const NavList = dynamic(() => import('./Navlist'));
+const Search = dynamic(() => import('./Search'));
 import { getServerCookie } from '@/utils/serverCookie.js';
 import debounce from "lodash/debounce";
-import { CiSearch } from 'react-icons/ci';
+import { useRouter } from 'next/navigation.js';
 
-export default function Header({onSearch}) {
+export default function Header() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const navigate = useRouter();
@@ -33,13 +33,6 @@ export default function Header({onSearch}) {
  
   const toggleIsNavOpen = () => setIsNavOpen((cur) => !cur);
 
-  const [query, setQuery] = useState("");
-
-  const handleInputChange = (e) => {
-    const newQuery = e.target.value;
-    setQuery(newQuery);
-    handleSearch(newQuery);
-  };
 
   const handleSearch = debounce((query) => {
     onSearch(query);
@@ -62,7 +55,10 @@ export default function Header({onSearch}) {
   useEffect(() => {
     const checkLoginStatus = async () => {
       const token = await getServerCookie('token'); 
-      // console.log(token);
+      console.log(token,process.env.JWT_SECRET)
+
+      // const data = jwt.verify(token,process.env.JWT_SECRET);
+      // console.log(data)
       setIsLoggedIn(!!token); 
     };
 
@@ -77,7 +73,7 @@ export default function Header({onSearch}) {
     <Navbar className="mx-auto p-2 lg:pl-6 shadow-none sticky top-0 z-50">
       <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
         <Typography as="a" href="#" className="mr-4 ml-2 cursor-pointer py-1.5 font-medium">
-          <Image width={80} height={80} src="/images/jenii1.png" alt="" />
+          <Image width={80} height={80} src="/images/jenii1.png" alt="Jenii" />
         </Typography>
         {/*  */}
         <Search/>
@@ -91,15 +87,10 @@ export default function Header({onSearch}) {
         >
           <Bars2Icon className="h-6 w-6" />
         </IconButton>
-        <div className="flex gap-3 text-pink-500">
-          <IconButton color="white" className="shadow-none">
-            <Store />
-          </IconButton>
-          <div onClick={()=>navigate.push('/checkout')}>
+        <div className="flex justify-center items-center  gap-3 text-pink-500">
+          <div className='pt-2 px-2 cursor-pointer' onClick={()=>navigate.push('/checkout')}>
             <Badge content="5" color="pink">
-              <IconButton color="white" className="shadow-none">
                 <Cart />
-              </IconButton>
             </Badge>
           </div>
 

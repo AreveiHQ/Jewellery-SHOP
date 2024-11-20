@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Footer from "@/components/HomePage/Footer";
-import Header from "@/components/HomePage/Header";
 import NavBar from "@/components/HomePage/Navbar";
 import Image from "next/image";
 import { Button } from "@/MaterialTailwindNext";
@@ -85,7 +84,6 @@ export default function ShoppingCart() {
 
   return (
     <>
-      <Header />
       <NavBar />
 
       {cartItems ?<div className="container mx-auto p-6">

@@ -2,7 +2,6 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import Header from "@/components/HomePage/Header";
 import NavBar from "@/components/HomePage/Navbar";
 import Link from 'next/link';
 import axiosInstance from '@/utils/axiosInstance';
@@ -47,7 +46,6 @@ export default function SignUp() {
 
   return (
     <>
-      <Header />
       <NavBar />
 
       <div className="flex justify-center items-center min-h-[80vh] py-0 sm:py-10 bg-gray-100">

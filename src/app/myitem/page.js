@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react';
 import Image from 'next/image';
-import Header from '@/components/HomePage/Header';
 import NavBar from '@/components/HomePage/Navbar';
 import Footer from '@/components/HomePage/Footer';
 
@@ -30,7 +29,6 @@ export default function Page() {
 
   return (
     <>
-    <Header/>
     <NavBar/>
     <section className="p-9 rounded-lg shadow-xl bg-white max-w-md mx-auto ">
       <figure className="flex items-center">

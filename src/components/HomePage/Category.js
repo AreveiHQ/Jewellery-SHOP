@@ -82,13 +82,13 @@ export default function ProductCategories() {
         className=""
       >
         { category ? category.map((category,ind) => (
-          <div key={ind} className="text-center p-4">
+          <div key={ind} className="text-center p-2 sm:p-4">
             <Image
               width={100}
               height={100}
               src={category.image}
               alt={category.name}
-              className="w-24 h-24 mx-auto mb-2 rounded-full"
+              className="w-[clamp(4rem,5vw,6rem)]   mx-auto mb-2 rounded-full"
             />
             <h3 className="text-gray-600">{category.name}</h3>
           </div>)

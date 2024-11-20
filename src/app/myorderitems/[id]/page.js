@@ -1,6 +1,5 @@
 'use client';
 import Footer from '@/components/HomePage/Footer';
-import Header from '@/components/HomePage/Header';
 import NavBar from '@/components/HomePage/Navbar';
 import { getServerCookie } from '@/utils/serverCookie';
 import axios from 'axios';
@@ -41,7 +40,6 @@ export default function Page() {
 
     return (
         <>
-        <Header/>
         <NavBar/>
         <div className="order-items-container p-4">
             {loading ? (

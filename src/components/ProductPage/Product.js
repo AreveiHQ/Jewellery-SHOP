@@ -17,7 +17,7 @@ const products = [
       imageUrl: "/images/Prod1.png", // Replace with actual path
     },
     {
-      id: 1,
+      id: 2,
       name: "Silver Earing for Birthday",
       price: "Rs. 543",
       oldPrice: "Rs. 634",
@@ -25,7 +25,7 @@ const products = [
       imageUrl: "/images/Prod2.png", // Replace with actual path
     },
     {
-      id: 1,
+      id: 3,
       name: "Silver Earing for Birthday",
       price: "Rs. 543",
       oldPrice: "Rs. 634",
@@ -33,7 +33,7 @@ const products = [
       imageUrl: "/images/Prod3.png", // Replace with actual path
     },
     {
-      id: 1,
+      id: 4,
       name: "Silver Earing for Birthday",
       price: "Rs. 543",
       oldPrice: "Rs. 634",
@@ -41,7 +41,7 @@ const products = [
       imageUrl: "/images/Prod4.png", // Replace with actual path
     },
     {
-      id: 1,
+      id: 5,
       name: "Silver Earing for Birthday",
       price: "Rs. 543",
       oldPrice: "Rs. 634",
@@ -49,7 +49,7 @@ const products = [
       imageUrl: "/images/Prod5.png", // Replace with actual path
     },
     {
-      id: 1,
+      id: 6,
       name: "Silver Earing for Birthday",
       price: "Rs. 543",
       oldPrice: "Rs. 634",
@@ -57,7 +57,7 @@ const products = [
       imageUrl: "/images/Prod6.png", // Replace with actual path
     },
     {
-      id: 1,
+      id: 7,
       name: "Silver Earing for Birthday",
       price: "Rs. 543",
       oldPrice: "Rs. 634",
@@ -65,7 +65,7 @@ const products = [
       imageUrl: "/images/Prod7.png", // Replace with actual path
     },
     {
-      id: 1,
+      id: 8,
       name: "Silver Earing for Birthday",
       price: "Rs. 543",
       oldPrice: "Rs. 634",
@@ -76,7 +76,7 @@ const products = [
   ];
 
 export default function Product({id}) {
-    const [product, setProduct] = useState(null);
+    const [product, setProduct] = useState([]);
 
   useEffect(() => {
     if (id) {
@@ -96,7 +96,40 @@ export default function Product({id}) {
     return (
         <div className="flex flex-col lg:flex-row">
             <div>
-            <ProductImageSection images={product?.images?product.images:[]}/>
+            <div className="p-3 bg-[#F3F3F3] rounded-md md:mx-9  sticky top-24">
+            <div className="flex item-center justify-center rounded-md p-2">
+            <Carousel
+            className="rounded-xl w-[500px]  md:w-[449px] md:h-[528px] max-w-[500px] md:max-w-none"
+            navigation={({ setActiveIndex, activeIndex }) => (
+                <div className="absolute bottom-0 left-2/4 z-50 flex -translate-x-2/4 gap-2">
+                {product?.images?.map((img, i) => (
+                    <Image
+                    width={500}
+                    height={500}
+                    src={img}
+                    key={`productDetails ${i}`}
+                    alt={`productDetails ${i}`}
+                    className={`block my-auto cursor-pointer rounded-2xl transition-all content-[''] border-2 ${
+                        activeIndex === i ? "w-16 h-16  bg-white border-pink-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
+                    }`}
+                    onClick={() => setActiveIndex(i)}
+                    />
+                ))}
+                </div>
+            )}
+            >
+                {product?.images?.map((img,ind)=><Image
+                width={400}
+                height={400}
+                    src={img}
+                    alt={`Product${ind}`}
+                    key={`Product${ind}`}
+                    className="object-contain w-full h-auto"
+                />)}
+                </Carousel>
+            </div>
+        
+        </div>
             </div>
             <div>
             <ProductInfo info={product} />
@@ -107,51 +140,7 @@ export default function Product({id}) {
     );
 }
 
-function ProductImageSection({images}) {
-    return (
-        <div className="p-3 bg-[#F3F3F3] rounded-md md:mx-9  sticky top-24">
-            <div className="flex item-center justify-center rounded-md p-2">
-            <Carousel
-            className="rounded-xl w-[500px]  md:w-[449px] md:h-[528px] max-w-[500px] md:max-w-none"
-            navigation={({ setActiveIndex, activeIndex }) => (
-                <div className="absolute bottom-0 left-2/4 z-50 flex -translate-x-2/4 gap-2">
-                {images.map((img, i) => (
-                    <Image
-                    width={500}
-                    height={500}
-                    src={img}
-                    key={i}
-                    className={`block my-auto cursor-pointer rounded-2xl transition-all content-[''] border-2 ${
-                        activeIndex === i ? "w-16 h-16  bg-white border-pink-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
-                    }`}
-                    onClick={() => setActiveIndex(i)}
-                    />
-                ))}
-                </div>
-            )}
-            >
-                {images.map((img,ind)=><Image
-                width={400}
-                height={400}
-                    src={img}
-                    alt={`Product${ind}`}
-                    className="object-contain w-full h-auto"
-                />)}
-                </Carousel>
-            </div>
-            {/* <div className="flex justify-center mt-4 gap-2">
-            {Array(4)
-                .fill("")
-                .map((_, index) => (
-                    <div
-                        key={index}
-                        className="w-16 h-16 bg-gray-300 border border-gray-300"
-                    ></div>
-                ))}
-        </div> */}
-        </div>
-    );
-}
+
 
 
 

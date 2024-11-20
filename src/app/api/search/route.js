@@ -9,9 +9,9 @@ export async function GET(req) {
     console.log(query);
     
     try {
-        const results = await Product.find({ $text: { $search: query } });
+        const results = await Product.find({ $text: { $search: query,$caseSensitive:false,$diacriticSensitive:false } });
         return NextResponse.json(results);
     } catch (error) {
-        return NextResponse.json({ error: "Error fetching products" }, { status: 500 });
+        return NextResponse.json({ error: "Error fetching products",error }, { status: 500 });
     }
 }

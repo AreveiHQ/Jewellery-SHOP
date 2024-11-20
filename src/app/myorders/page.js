@@ -1,7 +1,5 @@
 'use client'
-import Footer from '@/components/HomePage/Footer';
-import Header from '@/components/HomePage/Header';
-import NavBar from '@/components/HomePage/Navbar';
+
 import { getServerCookie } from '@/utils/serverCookie';
 import axios from 'axios';
 import Link from 'next/link';
@@ -33,8 +31,7 @@ const MyOrders = () => {
 
   return (
     <>
-      <Header />
-      <NavBar />
+
       <div className="p-6 bg-gray-50 min-h-screen">
         <h1 className="text-2xl font-semibold">All Orders</h1>
         <h4 className='text-md text-slate-300 mb-4'>from anytime</h4>
@@ -79,7 +76,6 @@ const MyOrders = () => {
           )}
         </div>
       </div>
-      <Footer />
     </>
   );
 };

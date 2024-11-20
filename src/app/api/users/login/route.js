@@ -23,11 +23,16 @@ export async function POST(req) {
       throw new BadRequestError('Invalid credentials');
     }
 
-    const userId = user._id;
-    const token =  await jwt.sign({ userId }, process.env.JWT_SECRET);
+    const payload={
+      userId:user._id,
+      name:user.name,
+      email:user.email
+    }
+    const token =  await jwt.sign(payload, process.env.JWT_SECRET);
 
     const response= NextResponse.json(
       {
+        
         message: 'Sign-in successful',
         token: token,
       },
