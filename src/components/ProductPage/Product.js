@@ -7,6 +7,7 @@ import Customers from "./Customers";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import RelatedProducts from "../RelatedProducts";
 const products = [
     {
       id: 1,
@@ -75,33 +76,38 @@ const products = [
     // Add more products...
   ];
 
-export default function Product({id}) {
+export default function Product({ id }) {
     const [product, setProduct] = useState(null);
+    const [relatedProducts, setRelatedProducts] = useState([]);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (id) {
-      const fetchProduct = async () => {
-        try {
-          const response = await axios.get(`/api/products/${id}`);
-          setProduct(response.data);
-        //   console.log(response.data)
-        } catch (error) {
-          setError('Error fetching product');
-        } 
-      };
+    useEffect(() => {
+        if (id) {
+            const fetchProduct = async () => {
+                try {
+                    const response = await axios.get(`/api/products/${id}`);
+                    setProduct(response.data.product);
+                    setRelatedProducts(response.data.relatedProducts);
+                } catch (error) {
+                    setError("Error fetching product or related products");
+                    console.error(error);
+                }
+            };
 
-      fetchProduct();
-    }
-  }, [id]);
+            fetchProduct();
+        }
+    }, [id]);
+
+
     return (
-        <div className="flex flex-col lg:flex-row">
-            <div>
-            <ProductImageSection images={product?.images?product.images:[]}/>
+        <div className="flex flex-col lg:flex-row gap-6">
+            <div className="w-full lg:w-1/2">
+                <ProductImageSection images={product?.images || []} />
             </div>
-            <div>
-            <ProductInfo info={product} />
-            <Products/>
-            <Customers productId={id} />
+            <div className="w-full lg:w-1/2">
+                <ProductInfo info={product} />
+                <RelatedProducts relatedProducts={relatedProducts} />
+                <Customers productId={id} />
             </div>
         </div>
     );
