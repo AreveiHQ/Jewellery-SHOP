@@ -11,7 +11,18 @@ export async function GET(request, { params }) {
     if (!product) {
       return NextResponse.json({ message: 'Product not found' }, { status: 404 });
     }
-    return NextResponse.json(product, { status: 200 });
+    const relatedProducts = await Product.find({
+      category: product.category,
+      _id: { $ne: id }, 
+    }).limit(4); 
+
+    return NextResponse.json(
+      {
+        product,
+        relatedProducts,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 500 });
   }

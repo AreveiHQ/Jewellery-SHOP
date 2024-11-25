@@ -7,6 +7,7 @@ import Customers from "./Customers";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import RelatedProducts from "../RelatedProducts";
 const products = [
     {
       id: 1,
@@ -75,28 +76,46 @@ const products = [
     // Add more products...
   ];
 
-export default function Product({id}) {
-    const [product, setProduct] = useState([]);
+export default function Product({ id }) {
+    const [product, setProduct] = useState(null);
+    const [relatedProducts, setRelatedProducts] = useState([]);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (id) {
-      const fetchProduct = async () => {
-        try {
-          const response = await axios.get(`/api/products/${id}`);
-          setProduct(response.data);
-        //   console.log(response.data)
-        } catch (error) {
-          setError('Error fetching product');
-        } 
-      };
+    useEffect(() => {
+        if (id) {
+            const fetchProduct = async () => {
+                try {
+                    const response = await axios.get(`/api/products/${id}`);
+                    setProduct(response.data.product);
+                    setRelatedProducts(response.data.relatedProducts);
+                } catch (error) {
+                    setError("Error fetching product or related products");
+                    console.error(error);
+                }
+            };
 
-      fetchProduct();
-    }
-  }, [id]);
+            fetchProduct();
+        }
+    }, [id]);
+
+
     return (
-        <div className="flex flex-col lg:flex-row">
-            <div>
-            <div className="p-3 bg-[#F3F3F3] rounded-md md:mx-9  sticky top-24">
+        <div className="flex flex-col lg:flex-row gap-6">
+            <div className="w-full lg:w-1/2">
+                <ProductImageSection images={product?.images || []} />
+            </div>
+            <div className="w-full lg:w-1/2">
+                <ProductInfo info={product} />
+                <RelatedProducts relatedProducts={relatedProducts} />
+                <Customers productId={id} />
+            </div>
+        </div>
+    );
+}
+
+function ProductImageSection({images}) {
+    return (
+        <div className="p-3 bg-[#F3F3F3] rounded-md md:mx-9  sticky top-24">
             <div className="flex item-center justify-center rounded-md p-2">
             <Carousel
             className="rounded-xl w-[500px]  md:w-[449px] md:h-[528px] max-w-[500px] md:max-w-none"
@@ -128,14 +147,16 @@ export default function Product({id}) {
                 />)}
                 </Carousel>
             </div>
-        
-        </div>
-            </div>
-            <div>
-            <ProductInfo info={product} />
-            <Products/>
-            <Customers productId={id} />
-            </div>
+            {/* <div className="flex justify-center mt-4 gap-2">
+            {Array(4)
+                .fill("")
+                .map((_, index) => (
+                    <div
+                        key={index}
+                        className="w-16 h-16 bg-gray-300 border border-gray-300"
+                    ></div>
+                ))}
+        </div> */}
         </div>
     );
 }
