@@ -196,33 +196,33 @@ export default function ProductsCard() {
     <div className="max-w-7xl mx-auto p-2 sm:p-4">
       {/* Top Products Section */}
       <section className="mb-12">
-      {getProducts ? <><h2 className="text-2xl font-bold mb-6">Top Products</h2>
+      {getProducts ? <><h2 className="text-2xl font-bold mt-6">Top Products</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-2 md:gap-y-4">
           { getProducts?.map((product) => (
             <div
               key={product._id}
-              className="bg-white rounded-lg p-2 md:p-4 hover:shadow-xl transition-[--tw-shadow] "
+              className="bg-white rounded-lg p-2 md:p-4 shadow-none md:hover:shadow-xl transition-[--tw-shadow] "
             >
+              <Link href={`/product/${product._id}`} >
               <Image
                 width={300}
                 height={300}
                 src={product.images[0]}
                 alt={product.name}
-                className="w-full h-52 object-cover rounded-lg mb-4 "
+                className="w-full h-[clamp(10rem ,12vw,14rem)] object-cover rounded-lg "
               />
-              <Link href={`/product/${product._id}`} className="px-1">
                 <div className="flex justify-between items-center gap-2 mt-2">
                   <div className="flex  items-center gap-x-2  line-clamp-1 w-[90%]">
-                    <span className="text-[#1E1E1E] font-semibold text-base ">
+                    <span className="text-[#1E1E1E] font-semibold text-sm md:text-base ">
                       {formatPrice(product.discountPrice)}
                     </span>
-                    <span className="line-through text-[#F42222] text-xs  line-clamp-1">
-                      {formatPrice(product.price)}
+                    <span className=" text-[#F42222] text-xs  line-clamp-1">
+                      {product.discountPercent}% Off
                     </span>
                   </div>
                   <div className="text-sm text-gray-500  flex justify-center items-center gap-2 w-[40px]">
                     <span className="text-[#F42222]">★</span>
-                    <span>3.6</span>
+                    <span>{product.averageRating.toFixed(1)}</span>
                   </div>
                 </div>
                 <div className="text-gray-600 line-clamp-1">{product.name}</div>

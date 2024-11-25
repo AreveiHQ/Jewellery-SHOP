@@ -212,8 +212,6 @@ const DeliveryForm = () => {
           {...register("state")}
           type="text"
           placeholder="State"
-          value="Gujarat"
-          readOnly
           className="border bg-[#F2F2F2] text-gray-700 rounded-lg p-3 w-full"
         />
       {errors.state && <p className="text-red-500 text-sm">{errors.state.message}</p>}

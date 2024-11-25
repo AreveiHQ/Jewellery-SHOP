@@ -73,6 +73,6 @@ const productSchema = new mongoose.Schema({
 }, {
   timestamps: true,
 });
-
 const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
+Product.createIndexes({ name: "text", description: "text", category:"text",subCategory:"text",collection:"text"})
 export default Product;

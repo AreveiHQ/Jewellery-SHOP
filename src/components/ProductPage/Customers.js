@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Star from '@/assets/Star.svg';
 import { getServerCookie } from "@/utils/serverCookie";
 
@@ -61,9 +60,9 @@ export default function Customers({ productId }) {
     };
 
     return (
-        <div className="p-6 bg-white rounded-lg shadow-lg">
+        <div className="py-5 bg-white ">
          
-            <h2 className="text-2xl font-semibold text-gray-800">Customer Reviews</h2>
+            <h2 className="my-3 font-semibold text-xl">Customer Reviews</h2>
 
             {/* Review Form */}
             <form onSubmit={submitReview} className="my-4">

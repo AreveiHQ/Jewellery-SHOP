@@ -16,7 +16,6 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import jwt from "jsonwebtoken";
-import 'react-toastify/dist/ReactToastify.css';
 import dynamic from 'next/dynamic';
 const ProfileMenu = dynamic(() => import('./ProfileMenu'));
 const NavList = dynamic(() => import('./Navlist'));
@@ -28,6 +27,7 @@ import { useRouter } from 'next/navigation.js';
 export default function Header() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [user, setUser] = useState(null); 
   const navigate = useRouter();
 
  
@@ -55,10 +55,8 @@ export default function Header() {
   useEffect(() => {
     const checkLoginStatus = async () => {
       const token = await getServerCookie('token'); 
-      console.log(token,process.env.JWT_SECRET)
-
-      // const data = jwt.verify(token,process.env.JWT_SECRET);
-      // console.log(data)
+      const data = jwt.decode(token);
+      setUser(data)
       setIsLoggedIn(!!token); 
     };
 
@@ -89,14 +87,14 @@ export default function Header() {
         </IconButton>
         <div className="flex justify-center items-center  gap-3 text-pink-500">
           <div className='pt-2 px-2 cursor-pointer' onClick={()=>navigate.push('/checkout')}>
-            <Badge content="5" color="pink">
+            {/* <Badge content="5" color="pink"> */}
                 <Cart />
-            </Badge>
+            {/* </Badge> */}
           </div>
 
           {/* Conditionally render ProfileMenu or Login button */}
           {isLoggedIn ? (
-            <ProfileMenu />
+            <ProfileMenu user={user} />
           ) : (
               <Link href='/login'>
             <Button

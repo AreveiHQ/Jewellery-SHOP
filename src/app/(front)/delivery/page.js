@@ -1,9 +1,8 @@
 import DeliveryForm from "@/components/Delivery/DeliveryForm";
 
-import OrderCart from "../../components/Delivery/OrderCart";
+import OrderCart from "@/components/Delivery/OrderCart";
 import NavBar from "@/components/HomePage/Navbar";
 import Footer from "@/components/HomePage/Footer";
-import DeliveryLoader from "@/components/Loaders/DeliveryLoader";
 
 export default function AddressPage() {
   return (
@@ -19,7 +18,6 @@ export default function AddressPage() {
           </div>
           
         </div>
-        <DeliveryLoader/>
         <Footer/>
      </main>
     </div>

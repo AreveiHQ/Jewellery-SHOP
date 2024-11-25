@@ -9,7 +9,6 @@ const NavBar = dynamic(() => import('@/components/HomePage/Navbar'), { ssr: fals
 import Link from "next/link";
 import axiosInstance from "@/utils/axiosInstance";
 import { toast, ToastContainer } from "react-toastify"; 
-import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from 'next/navigation';
 
 // Yup validation schema

@@ -6,7 +6,6 @@ import NavBar from "@/components/HomePage/Navbar";
 import Link from 'next/link';
 import axiosInstance from '@/utils/axiosInstance';
 import { toast, ToastContainer } from 'react-toastify'; // Import Toastify components
-import 'react-toastify/dist/ReactToastify.css'; // Import Toastify styles
 
 // Yup validation schema for sign-up
 const signupSchema = yup.object().shape({

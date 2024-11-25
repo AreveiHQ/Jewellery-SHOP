@@ -64,7 +64,7 @@ export default function UploadPage() {
     // Handle image preview
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        setValue("images", e.target.files); // Set file for form submission
+        // setValue("images", e.target.files); // Set file for form submission
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => setPreview(reader.result);

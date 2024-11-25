@@ -6,7 +6,6 @@ import Image from "next/image";
 import { Button } from "@/MaterialTailwindNext";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { getServerCookie } from "@/utils/serverCookie";
 import CheckoutLoader from "@/components/Loaders/CheckoutLoader";
 import { useRouter } from "next/navigation";

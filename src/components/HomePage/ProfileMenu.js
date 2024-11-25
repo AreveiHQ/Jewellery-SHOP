@@ -3,6 +3,7 @@ import { Button, Avatar, Menu, MenuHandler, MenuList, MenuItem, Typography } fro
 import { UserCircleIcon, Cog6ToothIcon, InboxArrowDownIcon, LifebuoyIcon, PowerIcon, ChevronDownIcon } from '@heroicons/react/24/outline'; // Make sure you have heroicons installed
 import axios from 'axios'; 
 import { toast } from 'react-toastify'; 
+import { FaUserCircle } from 'react-icons/fa';
 
 const profileMenuItems = [
     {
@@ -27,7 +28,7 @@ const profileMenuItems = [
     },
 ];
 
-function ProfileMenu() {
+function ProfileMenu({user}) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
     const closeMenu = () => setIsMenuOpen(false);
@@ -55,8 +56,8 @@ function ProfileMenu() {
                         variant="circular"
                         size="sm"
                         alt="User Profile"
-                        className="border border-pink-300 p-0.5"
-                        src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
+                        className="border border-pink-300 p-0.5 text-black"
+                        src="/images/user.svg"
                     />
                     <ChevronDownIcon
                         strokeWidth={2.5}
@@ -68,7 +69,7 @@ function ProfileMenu() {
             <div className="flex items-center gap-3 px-4 py-3">
                 <div className="relative aspect-square w-10 rounded-full">
                   <img
-                    src="https://cdn.tailgrids.com/2.2/assets/core-components/images/account-dropdowns/image-1.jpg"
+                    src="/images/user.svg"
                     alt="account"
                     className="w-full rounded-full object-cover object-center"
                   />
@@ -76,10 +77,10 @@ function ProfileMenu() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-dark dark:text-white">
-                    Andrio Miller
+                   {user?.name}
                   </p>
                   <p className="text-sm text-body-color dark:text-dark-6">
-                    miller@company.com
+                    {user?.email}
                   </p>
                 </div>
               </div>

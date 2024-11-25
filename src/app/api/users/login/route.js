@@ -28,7 +28,7 @@ export async function POST(req) {
       name:user.name,
       email:user.email
     }
-    const token =  await jwt.sign(payload, process.env.JWT_SECRET);
+    const token =  await jwt.sign(payload, process.env.NEXT_PUBLIC_JWT_SECRET);
 
     const response= NextResponse.json(
       {

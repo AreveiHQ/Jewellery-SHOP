@@ -3,7 +3,6 @@
 import Footer from "@/components/HomePage/Footer";
 import Banner from "@/components/HomePage/Banner";
 import ProductCategories from "@/components/HomePage/Category";
-import Header from "@/components/HomePage/Header";
 import HeroSlider from "@/components/HomePage/HeroSlider";
 import NavBar from "@/components/HomePage/Navbar";
 import ProductsCard from "@/components/HomePage/ProductsCard";
@@ -15,18 +14,8 @@ import ProductList from "@/components/HomePage/ProductList";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Skel from '@skel-ui/react';
 export default function HomePage() {
   const [products, setProducts] = useState([]);
-
-  const handleSearch = async (query) => {
-    if (!query) return setProducts([]);
-
-    const res = await fetch(`/api/search?query=${query}`);
-    const data = await res.json();
-    setProducts(data);
-  };
-
   const [getSlides,setSlides] = useState([])
   const [slideLoader,setSlideLoader] = useState(false)
   const handleGetSlides = async () => {
@@ -53,7 +42,6 @@ export default function HomePage() {
   },[])
   return (
     <div>
-      <Header onSearch={handleSearch} />
       {products.length > 0 && (
         <div className="product-list-container">
           <ProductList products={products} />
