@@ -4,8 +4,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import NavBar from "@/components/HomePage/Navbar";
 import Link from 'next/link';
-import axiosInstance from '@/utils/axiosInstance';
-import { toast, ToastContainer } from 'react-toastify'; // Import Toastify components
+import { toast } from 'react-toastify'; // Import Toastify components
+import axios from 'axios';
 
 // Yup validation schema for sign-up
 const signupSchema = yup.object().shape({
@@ -29,7 +29,7 @@ export default function SignUp() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axiosInstance.post('/api/users/signup', {
+      const response = await axios.post('/api/users/signup', {
         name: data.name,
         email: data.email,
         phone: data.phone,
@@ -38,7 +38,7 @@ export default function SignUp() {
       console.log('User created successfully:', response.data);
       toast.success('User created successfully!'); // Show success message
     } catch (error) {
-      console.error('Error creating user:', error.response ? error.response.data : error.message);
+      console.error('Error creating user:', error);
       toast.error(error.response?.data?.errors || 'Error creating user.'); // Show error message
     }
   };
@@ -118,8 +118,6 @@ export default function SignUp() {
           </form>
         </div>
       </div>
-
-      <ToastContainer /> {/* Add ToastContainer to the component */}
     </>
   );
 }

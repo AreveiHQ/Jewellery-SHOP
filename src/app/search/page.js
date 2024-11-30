@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 import NavBar from "@/components/HomePage/Navbar";
-import Header from "@/components/HomePage/Header";
 import Footer from "@/components/HomePage/Footer";
 import { Button } from "@/MaterialTailwindNext";
 import Image from "next/image";
@@ -75,7 +74,9 @@ export default function SearchPage() {
                         throw new Error('Network response was not ok');
                     }
                     const data = await response.json();
-                    setProducts(data);
+                    console.log(data)
+                    setProducts(data.
+                      products);
                 } catch (err) {
                     setError(err.message);
                 } finally {
@@ -88,7 +89,6 @@ export default function SearchPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Header />
             <NavBar />
             <div className=" max-w-6xl mx-auto p-6">
                 <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Search Results for "{query}"</h1>

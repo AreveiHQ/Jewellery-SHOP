@@ -4,9 +4,10 @@ import { UserAuth } from "@/utils/userAuth";
 import { NextResponse } from "next/server";
 connect();
 export async function GET(req) {
+  await connect();
         try {
                 const userId =  UserAuth(request);
-                const user = await User.findOne({_id:userID}).select("-password");
+                const user = await User.findOne({_id:userId}).select("-password");
           return NextResponse.json(
             {
               message: 'User found',

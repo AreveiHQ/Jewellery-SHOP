@@ -1,7 +1,37 @@
+"use client"
 import { Carousel} from "@/MaterialTailwindNext";
+import axios from "axios";
 import Image from "next/image";
+import { useEffect, useState } from "react";
  
-export default function HeroSlider({slides}) {
+export default function HeroSlider() {
+  const [slides,setSlides] = useState([])
+  const [slideLoader,setSlideLoader] = useState(false)
+  const handleGetSlides = async () => {
+    setSlideLoader(true)
+    try {
+      const response = await axios.get(`/admin/slides/`,{
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      console.log("Slides Get", response.data.slides);
+      setSlides(response.data.slides)
+      setSlideLoader(false)
+    } catch (err) {
+      console.error("Error getting Slides", err.response ? err.response.data : err.message);
+      toast.error("Failed to get Slides ");
+      setSlideLoader(false)
+    }
+
+  };
+  useEffect(()=>{
+    handleGetSlides();
+  },[])
+   if(slideLoader){
+    return <div className="w-full h-[clamp(12rem,30vw,40rem)] bg-gray-200 shimmer rounded-lg" />
+   }
   return (
     <Carousel className=" cursor-pointer bg-blue-gray-50 h-[clamp(12rem,30vw,40rem)]"
      autoplay autoplayDelay={10000} loop

@@ -6,9 +6,9 @@ import User from '@/models/userModel';
 import { connect } from '@/dbConfig/dbConfig';
 import { BadRequestError } from '@/lib/errors';
 
-connect();
 
 export async function POST(req) {
+  await connect();
   try {
     const { email, password } = await req.json();
 

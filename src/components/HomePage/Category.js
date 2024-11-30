@@ -1,4 +1,4 @@
-// components/ProductCategories.js
+"use client"
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Carousel from "react-multi-carousel";
@@ -6,26 +6,15 @@ import "react-multi-carousel/lib/styles.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Skel from '@skel-ui/react';
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { fetchCategories } from "@/lib/reducers/categoryReducer";
 export default function ProductCategories() {
-  const [category,setCategory] = useState(null);
-  const handleGetCategrory = async () => {
-    try {
-      const response = await axios.get(`/api/categories/`,{
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      console.log("category Get", response.data);
-      setCategory(response.data)
-    } catch (err) {
-      console.error("Error getting category", err.response ? err.response.data : err.message);
-      toast.error("Failed to get category ");
-    }
-
-  };
+  const dispatch = useAppDispatch();
+  const cat= useAppSelector((state)=>state.categories)
+ 
   useEffect(()=>{
-    handleGetCategrory();
+    if(cat.categories === null)
+    dispatch(fetchCategories());
   },[])
   // const categories = [
   //   { name: "Pendants", image: "/images/pendants.png" },
@@ -81,16 +70,17 @@ export default function ProductCategories() {
         removeArrowOnDeviceType={["tablet", "mobile"]}
         className=""
       >
-        { category ? category.map((category,ind) => (
+        { cat.categories ? cat.categories?.map((category,ind) => (
           <div key={ind} className="text-center p-2 sm:p-4">
             <Image
               width={100}
               height={100}
-              src={category.image}
+              loading="lazy"
+              src={category?.image}
               alt={category.name}
               className="w-[clamp(4rem,6vw,7rem)] h-[clamp(4rem,6vw,7rem)]   mx-auto mb-2 rounded-full"
             />
-            <h3 className="text-gray-600">{category.name}</h3>
+            <h3 className="text-gray-600">{category?.name}</h3>
           </div>)
         ):
         Array(6).fill(0).map((_, index) => (

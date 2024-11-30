@@ -1,21 +1,21 @@
-// import ProtectedMiddleware from "./middleware/protectedMiddleware";
-// import UserAuth from "./middleware/userAuth";
+// middleware.ts
+import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export default function middleware(request) {
-        const path=request.nextUrl.pathname 
-        const isPublicPath = path === '/login' || path === '/register'
-        const token = request.cookies.get('token')?.value || '';
-        if(isPublicPath && token){
-                return NextResponse.redirect(new URL('/',request.nextUrl))
-        }
-        if(!isPublicPath && !token){
-                return NextResponse.redirect(new URL('/login',request.nextUrl))
-        }
+export async function middleware(req) {
+        const secret = process.env.NEXTAUTH_SECRET;
+  const token = await getToken({ req,secret});
+  const { pathname } = req.nextUrl;
+
+  if(token && pathname === "/login"){
+        return NextResponse.redirect(new URL("/", req.url));
+  }
+ 
+  return NextResponse.next();
 }
+
 export const config ={
         matcher:[
-                '/profile',
                 '/login',
-                '/register',
         ]
 }

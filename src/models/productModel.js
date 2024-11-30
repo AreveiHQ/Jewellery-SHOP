@@ -26,6 +26,11 @@ const productSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  slug:{
+    type:String,
+    required:true,
+    unique:true
+  },
   description: String,
   price: {
     type: Number,
@@ -44,9 +49,15 @@ const productSchema = new mongoose.Schema({
     required:true
   },
   category: {
-    type: mongoose.Schema.Types.ObjectId,
+    name:{
+    type: String,
     required: true,
-    ref: 'Category',
+    },
+    id:{
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Category',
+    }
   },
   collectionName:{
     type:String,
@@ -73,6 +84,6 @@ const productSchema = new mongoose.Schema({
 }, {
   timestamps: true,
 });
+
 const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
-Product.createIndexes({ name: "text", description: "text", category:"text",subCategory:"text",collection:"text"})
 export default Product;

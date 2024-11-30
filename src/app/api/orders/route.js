@@ -4,8 +4,9 @@ import Order from '@/models/orderModel';
 import Cart from '@/models/cartModel';
 import { UserAuth } from '@/utils/userAuth';
 import { connect } from '@/dbConfig/dbConfig';
-connect();
+
 export async function POST(request) {
+  await connect();
   try {
     const { paymentId, address, amount, orderId, signature } = await request.json();
     const userId =  UserAuth(request); // Assume userId is set in middleware
@@ -45,6 +46,7 @@ export async function POST(request) {
 }
 
 export async function GET(request) {
+  await connect();
   try {
     const userId =  UserAuth(request); // Assume userId is set in middleware
     const orders = await Order.find({ userId });

@@ -9,9 +9,9 @@ const razorpayInstance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_SECRET,
 });
-connect();
 
 export async function POST(req) {
+  await connect();
   try {
     const {selectedDetails, firstName, lastName, contact, street, city, state, postalCode, landmark } = await req.json();
     const userId = UserAuth(req);

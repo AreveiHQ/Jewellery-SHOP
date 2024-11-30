@@ -24,6 +24,9 @@ const userSchema = new mongoose.Schema({
             message: 'Invalid email format',
         },
     },
+    profilePhoto:{
+        type:String,
+    },
     phone: {
         type: Number,
         required: true
@@ -35,18 +38,6 @@ const userSchema = new mongoose.Schema({
     addresses:[{
         type:String,
 }],
-    isVerified: {
-        type: Boolean,
-        default: false
-    },
-    isAdmin: {
-        type: Boolean,
-        default: false
-    },
-    forgotPasswordToken:String,
-    forgotPasswordTokenExpiry:Date,
-    verifyToken:String,
-    verifyTokenExpiry:Date,
     otp: {
         type: String
     },
@@ -59,6 +50,6 @@ const userSchema = new mongoose.Schema({
 });
 
 
-const User = mongoose.models.User ||mongoose.model('User', userSchema);
+const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 export default User;

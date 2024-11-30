@@ -3,6 +3,7 @@ import fs from 'fs';
 import { PDFInvoice } from '@h1dd3nsn1p3r/pdf-invoice';
 import razorpayInstance from '@/utils/razorpayInstance';
 export async function GET(req) {
+  await connect();
   try {
     const { searchParams } = new URL(req.url);
     const payment_id = searchParams.get('payment_id');

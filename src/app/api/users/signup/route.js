@@ -3,10 +3,10 @@ import { BadRequestError, InternalServerError } from "@/lib/errors";
 import User from "@/models/userModel";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
-// Call the connect function to ensure the database connection is established
-connect();
+
 
 export async function POST(request) {
+    await connect();
     try {
         const { name, email, phone, password } = await request.json();
 

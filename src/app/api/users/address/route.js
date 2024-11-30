@@ -2,8 +2,9 @@ import { connect } from "@/dbConfig/dbConfig";
 import Address from "@/models/addressModel";
 import { UserAuth } from "@/utils/userAuth";
 import { NextResponse } from "next/server";
-connect();
+
 export async function POST(req) {
+    await connect();
     try {
         const {firstName, lastName, contact,street, city, state, postalCode, landmark } = await req.json(); 
         const userId =  UserAuth(req);
@@ -36,6 +37,7 @@ export async function POST(req) {
 }
 
 export async function GET(req) {
+    await connect();
     try {
         const userId =  UserAuth(req);
         const address = await Address.find({userId});

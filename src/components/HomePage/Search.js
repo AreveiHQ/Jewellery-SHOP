@@ -1,6 +1,6 @@
 "use client";
 import { Button, Input } from "@material-tailwind/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import debounce from "lodash/debounce";
 import { CiSearch } from "react-icons/ci";
 
@@ -21,7 +21,7 @@ export default function Search() {
     };
 
    
-    const fetchSuggestions = async (query) => {
+    const fetchSuggestions =useCallback(debounce( async (query) => {
         if (query) {
             const res = await fetch(`/api/autocomplete?query=${query}`);
             const data = await res.json();
@@ -29,12 +29,12 @@ export default function Search() {
         } else {
             setSuggestions([]);
         }
-    };
+    },300),[]);
 
     const handleInputChange = (e) => {
         const value = e.target.value;
         setQuery(value);
-        fetchSuggestions(value); // Fetch suggestions on input change
+        fetchSuggestions(value.trim()); // Fetch suggestions on input change
     };
 
     const handleSuggestionClick = (suggestion) => {

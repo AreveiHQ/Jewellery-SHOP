@@ -4,13 +4,13 @@ import { connect } from '@/dbConfig/dbConfig';
 import { sendEmail } from '@/helper/sendEmail';
 import { NotFoundError } from '@/lib/errors';
 
-connect();
-
 function generateOTP() {
+
   return Math.floor(100000 + Math.random() * 900000).toString(); // Generates a 6-digit OTP
 }
 
 export async function POST(request) {
+  await connect();
   try {
     const { email } = await request.json();
     const user = await User.findOne({ email });

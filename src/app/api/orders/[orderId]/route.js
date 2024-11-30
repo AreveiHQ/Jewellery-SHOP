@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 import Order from '@/models/orderModel';
 import { connect } from '@/dbConfig/dbConfig';
 import { UserAuth } from '@/utils/userAuth';
-connect();
 export async function PATCH(request, { params }) {
+  await connect();
   try {
     const { orderId } = params;
     const { status } = await request.json();
@@ -29,6 +29,7 @@ export async function PATCH(request, { params }) {
 import axios from 'axios';
 
 export async function GET(request, { params }) {
+  await connect();
   try {
     const { orderId } = params;
     const userId = UserAuth(request);

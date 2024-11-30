@@ -8,16 +8,38 @@ export default function Customers({ productId }) {
     const [reviews, setReviews] = useState([]);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
+    const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
     // Fetch existing reviews
-    useEffect(() => {
-        async function fetchReviews() {
-            const res = await fetch(`/api/products/${productId}/reviews`);
-            const data = await res.json();
-            setReviews(data);
+    const handleShowMore = () => {
+        if (page < totalPages) {
+          setPage((prev) => prev + 1);
         }
-        fetchReviews();
-    }, [productId]);
+      };
+    const fetchReviews = async (page) => {
+        setIsLoading(true);
+        try {
+          const response = await fetch(`/api/products/${productId}/reviews?page=${page}&limit=3`);
+          const data = await response.json();
+          
+          if (response.ok) {
+            console.log(data)
+            setReviews((prev) => [...prev, ...data?.reviews]);
+            setTotalPages(data.totalPages);
+          } else {
+            console.error(data.message);
+          }
+        } catch (error) {
+          console.error('Error fetching reviews:', error.message);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+    useEffect(() => {
+        fetchReviews(page);
+    }, [productId,page]);
 
     // Submit a new review
     const submitReview = async (e) => {
@@ -61,7 +83,6 @@ export default function Customers({ productId }) {
 
     return (
         <div className="py-5 bg-white ">
-         
             <h2 className="my-3 font-semibold text-xl">Customer Reviews</h2>
 
             {/* Review Form */}
@@ -101,6 +122,11 @@ export default function Customers({ productId }) {
                     <ReviewItem key={idx} review={review} />
                 ))}
             </div>
+            {page < totalPages && (
+        <button onClick={handleShowMore} disabled={isLoading}>
+          {isLoading ? 'Loading...' : 'Show More'}
+        </button>
+      )}
         </div>
     );
 }

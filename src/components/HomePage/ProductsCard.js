@@ -207,6 +207,7 @@ export default function ProductsCard() {
               <Image
                 width={300}
                 height={300}
+                loading="lazy"
                 src={product.images[0]}
                 alt={product.name}
                 className="w-full h-[clamp(10rem ,12vw,14rem)] object-cover rounded-lg "

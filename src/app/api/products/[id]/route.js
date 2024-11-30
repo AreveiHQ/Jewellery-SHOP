@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import Product from '@/models/productModel';
 import { connect } from '@/dbConfig/dbConfig';
-connect();
-// Get a product by ID
+
 export async function GET(request, { params }) {
+  await connect();
   const { id } =  await params;
 
   try {
@@ -30,6 +30,7 @@ export async function GET(request, { params }) {
 
 // Update a product by ID
 export async function PUT(request, { params }) {
+  await connect();
   const { id } = await params;
   const updates = await request.json();
 
@@ -55,6 +56,7 @@ export async function PUT(request, { params }) {
 
 // Delete a product by ID
 export async function DELETE(request, { params }) {
+  await connect();
   const { id } = await params;
 
   try {

@@ -5,10 +5,9 @@ import * as yup from "yup";
 import dynamic from 'next/dynamic';
 const NavBar = dynamic(() => import('@/components/HomePage/Navbar'), { ssr: false });
 
-
+import { signIn } from 'next-auth/react';
 import Link from "next/link";
-import axiosInstance from "@/utils/axiosInstance";
-import { toast, ToastContainer } from "react-toastify"; 
+import { toast } from "react-toastify"; 
 import { useRouter } from 'next/navigation';
 
 // Yup validation schema
@@ -41,16 +40,23 @@ export default function Login() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axiosInstance.post("/api/users/login", {
-        email: data.email,
-        password: data.password,
-      });
-
-      console.log("Login successful:", response.data);
-      toast.success("Login successful!");
-      localStorage.setItem('token', response.data.token);
-      router.push("/");
-    } catch (error) {
+      const result = await signIn('credentials',{
+        redirect:false,
+        email:data.email,
+        password:data.password
+      })
+      if(result?.error){
+        if(result.error === "CredentialsSignIn"){
+          alert("Incorrect Password")
+        }
+        else[
+          alert(result.error)
+        ]
+      }
+      if(result?.url){
+        router.push('/')
+      }
+    }catch (error) {
       console.error("Error logging in:", error);
       toast.error(
         "Error logging in: " + (error.response?.data?.message || error.message)
@@ -61,7 +67,6 @@ export default function Login() {
   return (
     <>
       <NavBar />
-      <ToastContainer position="top-right" autoClose={5000} hideProgressBar />
 
       <div className="flex justify-center items-center min-h-[80vh] py-10 bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">

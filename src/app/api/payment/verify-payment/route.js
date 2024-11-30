@@ -4,8 +4,9 @@ import Order from '@/models/orderModel';
 import Cart from '@/models/cartModel';
 import { UserAuth } from '@/utils/userAuth';
 import { connect } from '@/dbConfig/dbConfig';
-connect();
+
 export async function POST(req) {
+  await connect();
   try {
     const { paymentId, address, amount, orderId, signature } = await req.json();
     const secret = process.env.RAZORPAY_SECRET; // Use environment variables for sensitive data

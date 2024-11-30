@@ -1,8 +1,11 @@
 import localFont from "next/font/local";
 import "../styles/globals.css";
-// import ClientLayout from "./ClientLayout";
+import ClientLayout from "./ClientLayout";
 import Header from "@/components/HomePage/Header";
 import ReactToastProvider from "./ReactToastProvider";
+import AuthProvider from "@/context/auth-session-proivder";
+import SessionManager from "@/context/session-manager";
+import StoreProvider from "./StoreProvider";
 
 // Define custom fonts
 const geistSans = localFont({
@@ -28,10 +31,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* <ClientLayout> */}
+        <ClientLayout>
+          <StoreProvider>
+      <AuthProvider>
+      <SessionManager />
           <Header/>
           {children}
-          {/* </ClientLayout> Client logic here */}
+    </AuthProvider>
+    </StoreProvider>
+          </ClientLayout> 
+
        <ReactToastProvider/>
       </body>
     </html>
