@@ -2,6 +2,7 @@ import Image from "next/image";
 import logo from "../../assets/image.png";
 import { IoLogoFacebook } from "react-icons/io";
 import { FaInstagram } from "react-icons/fa";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -58,16 +59,16 @@ const Footer = () => {
             {/* Menu Section */}
             <div className="mb-8 mt-2">
             <h2 className="text-xl font-semibold mb-4">Our Menu</h2>
-            <ul className="text-black space-y-2">
+            <ul className="text-black space-y-2 flex flex-col">
               <li>Account</li>
-              <li>About Us</li>
-              <li>Contact Us</li>
-              <li>Shipping Policy</li>
-              <li>Our Blogs</li>
-              <li>Store Locator</li>
-              <li>FAQ's & Support</li>
-              <li>Terms & Conditions</li>
-              <li>Privacy Policy</li>
+              <Link href="">About Us</Link>
+              <Link href="/ContactUs">Contact Us</Link>
+              <Link href="/shipping-policy">Shipping Policy</Link>
+              {/* <Link href="">Our Blogs</Link> */}
+              <Link href="/">Store Locator</Link>
+              <Link href="/faq-and-support">FAQ's & Support</Link>
+              <Link href="/terms-and-conditions">Terms & Conditions</Link>
+              <Link href="/policies">Privacy Policy</Link>
             </ul>
           </div>
 
@@ -91,7 +92,7 @@ const Footer = () => {
       {/* Footer Bottom */}
       <div className="mt-8 text-center text-gray-500 text-sm">
         <p>All Rights Reserved © JP Jewellers</p>
-        <p>Developed and Maintained by AREVEI</p>
+        <p>Developed and Maintained by <Link href="https://www.arevei.com/" className=" text-pink-200 hover:text-pink-500 hover:underline"> AREVEI </Link></p>
       </div>
     </footer>
   );

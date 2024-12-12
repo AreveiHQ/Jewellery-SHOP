@@ -3,18 +3,21 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import axios from "axios";
-import { toast } from "react-toastify";
+
 import Skel from '@skel-ui/react';
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { fetchCategories } from "@/lib/reducers/categoryReducer";
 export default function ProductCategories() {
   const dispatch = useAppDispatch();
-  const cat= useAppSelector((state)=>state.categories)
+  const {categories,loading,isfetched}= useAppSelector((state)=>state.categories)
  
   useEffect(()=>{
-    if(cat.categories === null)
-    dispatch(fetchCategories());
+    function handlegetData(){
+      if(!isfetched){
+        dispatch(fetchCategories());
+      }
+    }
+    handlegetData();
   },[])
   // const categories = [
   //   { name: "Pendants", image: "/images/pendants.png" },
@@ -70,7 +73,7 @@ export default function ProductCategories() {
         removeArrowOnDeviceType={["tablet", "mobile"]}
         className=""
       >
-        { cat.categories ? cat.categories?.map((category,ind) => (
+        { !loading ? categories?.map((category,ind) => (
           <div key={ind} className="text-center p-2 sm:p-4">
             <Image
               width={100}

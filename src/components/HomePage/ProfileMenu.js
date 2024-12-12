@@ -4,45 +4,46 @@ import { UserCircleIcon, Cog6ToothIcon, InboxArrowDownIcon, LifebuoyIcon, PowerI
 import axios from 'axios'; 
 import { toast } from 'react-toastify'; 
 import { FaUserCircle } from 'react-icons/fa';
+import Image from 'next/image';
+import { signOut } from 'next-auth/react';
 
-const profileMenuItems = [
-    {
-        label: "My Profile",
-        icon: UserCircleIcon,
-    },
-    {
-        label: "Edit Profile",
-        icon: Cog6ToothIcon,
-    },
-    {
-        label: "Inbox",
-        icon: InboxArrowDownIcon,
-    },
-    {
-        label: "Help",
-        icon: LifebuoyIcon,
-    },
-    {
-        label: "Sign Out",
-        icon: PowerIcon,
-    },
-];
+
 
 function ProfileMenu({user}) {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
     const closeMenu = () => setIsMenuOpen(false);
+    const profileMenuItems = [
+        {
+            label: "My Profile",
+            icon: UserCircleIcon,
+            onClickNavItem:()=>{closeMenu()},
+        },
+        {
+            label: "Edit Profile",
+            icon: Cog6ToothIcon,
+            onClickNavItem:()=>{closeMenu()},
+        },
+        {
+            label: "Inbox",
+            icon: InboxArrowDownIcon,
+            onClickNavItem:()=>{closeMenu()},
+        },
+        {
+            label: "Help",
+            icon: LifebuoyIcon,
+            onClickNavItem:()=>{closeMenu()},
+        },
+        {
+            label: "Sign Out",
+            icon: PowerIcon,
+            onClickNavItem:()=>{
+                signOut({callbackUrl:'/login',});
+                closeMenu();
+            },
+        },
+    ];
 
-    const handleSignOut = async () => {
-        try {
-            await axios.post('/api/users/logout');
-            localStorage.removeItem('token');
-            toast.success('Successfully logged out!');
-        } catch (error) {
-            console.error('Error logging out:', error);
-            toast.error('Failed to log out!');
-        }
-    };
 
     return (
         <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
@@ -68,7 +69,9 @@ function ProfileMenu({user}) {
             <MenuList className="p-1">
             <div className="flex items-center gap-3 px-4 py-3">
                 <div className="relative aspect-square w-10 rounded-full">
-                  <img
+                  <Image
+                  height={30}
+                  width={30}
                     src="/images/user.svg"
                     alt="account"
                     className="w-full rounded-full object-cover object-center"
@@ -85,12 +88,12 @@ function ProfileMenu({user}) {
                 </div>
               </div>
               
-                {profileMenuItems.map(({ label, icon }, key) => {
+                {profileMenuItems.map(({ label, icon,onClickNavItem }, key) => {
                     const isLastItem = key === profileMenuItems.length - 1;
                     return (
                         <MenuItem
                             key={label}
-                            onClick={isLastItem ? handleSignOut : closeMenu} // Handle Sign Out on last item
+                            onClick={onClickNavItem} // Handle Sign Out on last item
                             className={`flex items-center gap-2 rounded ${isLastItem ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10" : ""}`}
                         >
                             {React.createElement(icon, {

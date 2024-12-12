@@ -2,13 +2,12 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import dynamic from 'next/dynamic';
-const NavBar = dynamic(() => import('@/components/HomePage/Navbar'), { ssr: false });
 
 import { signIn } from 'next-auth/react';
 import Link from "next/link";
 import { toast } from "react-toastify"; 
 import { useRouter } from 'next/navigation';
+import { useState } from "react";
 
 // Yup validation schema
 const schema = yup.object().shape({
@@ -28,7 +27,7 @@ const schema = yup.object().shape({
 
 export default function Login() {
   const router = useRouter();
-
+  const [loading,setLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -40,6 +39,7 @@ export default function Login() {
 
   const onSubmit = async (data) => {
     try {
+      setLoading(true)
       const result = await signIn('credentials',{
         redirect:false,
         email:data.email,
@@ -62,13 +62,15 @@ export default function Login() {
         "Error logging in: " + (error.response?.data?.message || error.message)
       );
     }
+    finally{
+      setLoading(false)
+    }
   };
 
   return (
     <>
-      <NavBar />
 
-      <div className="flex justify-center items-center min-h-[80vh] py-10 bg-gray-100">
+      <div className="flex justify-center items-center min-h-[100vh] py-10 bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
           <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
             Login
@@ -105,7 +107,7 @@ export default function Login() {
               <input
                 type="password"
                 id="password"
-                autocomplete="current-password"
+                autoComplete="current-password"
                 className="mt-1 block w-full px-3 py-2 bg-[#F2F2F2] border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
                 {...register("password")}
               />
@@ -123,12 +125,18 @@ export default function Login() {
               >
                 Forgot password?
               </Link>
-              <button
+             {loading? <button type="button" className="bg-[#fe6161]  h-max w-max rounded-lg text-white font-bold  hover:cursor-not-allowed duration-[500ms,800ms]" disabled>
+              <div class="flex gap-1 items-center justify-center m-[10px]"> 
+            <div class="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4"></div>
+            Processing...
+        </div>
+            
+</button>: <button
                 type="submit"
                 className="px-4 py-2 bg-[#BC264B] text-white rounded-md hover:bg-red-700 transition-colors"
               >
                 Login
-              </button>
+              </button>}
             </div>
           </form>
           <div className="text-center">

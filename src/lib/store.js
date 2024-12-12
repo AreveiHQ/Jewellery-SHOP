@@ -1,9 +1,8 @@
-import { configureStore } from '@reduxjs/toolkit'
-import categoryReducer from "@/lib/reducers/categoryReducer"
-export const makeStore = () => {
-  return configureStore({
-    reducer: {
-        categories:categoryReducer
-    },
-  })
-}
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from './reducers';
+
+const store = configureStore({
+  reducer: rootReducer,
+});
+//dev pulse studio
+export default store;

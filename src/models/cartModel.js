@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-
+import Product from './productModel';
 // const cartSchema = new mongoose.Schema({
 //   userId: {
 //     type: mongoose.Schema.Types.ObjectId,
@@ -35,19 +35,58 @@ const cartSchema = new mongoose.Schema({
   },
   items: [
     {
-      productId: {
-        type: String, // keep this as String if you're using a custom productId
+        productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true,
+        type:String,
+      },
+      name:{
+        type:String,
+        required: true,
+      },
+      category:{
+        type:String,
+        required: true,
+      },
+      img_src:{
+        type:String,
+        required: true,
+      },
+      price: {
+        type: Number,
+        required: true,
+        default: 0,
+      },
+      discountedPrice: {
+        type: Number,
+        required: true,
+        default: 0,
       },
       quantity: {
         type: Number,
         required: true,
         default: 1,
       },
-      img_src: String,
-      name: String,
-      price: Number,
     },
   ],
+  totalPrice:{
+    type: Number,
+    default: 0,
+  },
+  totalDiscountedPrice:{
+    type: Number,
+    default: 0,
+  },
+  totalItem:{
+    type: Number,
+    default: 0,
+  },
+  discounte:{
+    type: Number,
+    default: 0,
+  },
+
 });
 
 

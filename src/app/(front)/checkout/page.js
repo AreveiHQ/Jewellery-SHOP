@@ -1,98 +1,34 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Footer from "@/components/HomePage/Footer";
 import NavBar from "@/components/HomePage/Navbar";
 import Image from "next/image";
 import { Button } from "@/MaterialTailwindNext";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { getServerCookie } from "@/utils/serverCookie";
 import CheckoutLoader from "@/components/Loaders/CheckoutLoader";
 import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import { ShoppingBagIcon } from "@heroicons/react/24/solid";
-
+import { useDispatch, useSelector } from "react-redux";
+import { removefromCart } from '@/lib/reducers/cartReducer'
 export default function ShoppingCart() {
-  const [cartItems, setCartItems] = useState(null);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [error, setError] = useState(null);
-  const [token, setToken] = useState(null);
+  const {loading,Items,loadingRemoveProduct,discounte, totalDiscountedPrice, totalItem,totalPrice} = useSelector((state)=>state.cart);
+  const dispatch = useDispatch();
   const navigate = useRouter();
-  useEffect(() => {
-    const fetchCartData = async () => {
-      const token = await getServerCookie("token");
-      setToken(token);
-      try {
-        const itemsResponse = await axios.get("/api/cart", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (itemsResponse.status === 200) {
-          const items = itemsResponse.data.items || [];
-          setCartItems(items);
-          calculateTotal(items);
-          console.log(items); 
-        } else {
-          setError("Failed to fetch cart items.");
-        }
-      } catch (err) {
-        console.error(
-          "Error fetching cart data",
-          err.response ? err.response.data : err.message
-        );
-        setError("Server error while fetching cart data.");
-      }
-    };
-
-    fetchCartData();
-  }, []);
-
+  
   const formatPrice = (price) => {
-    return price ? `Rs.${parseFloat(price).toFixed(2)}` : "N/A";
-  };
-
-  const calculateTotal = (items) => {
-    const total = items.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 1), 0);
-    setTotalPrice(total);
-  };
-
-  const handleRemoveFromCart = async (itemId) => { 
-    console.log("Removing item with ID:", itemId);
-    try {
-      const response = await axios.delete("/api/cart/remove", {
-        data: { productId: itemId },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.status === 200) {
-        const updatedCartItems = cartItems.filter((item) => item._id !== itemId); 
-        setCartItems(updatedCartItems);
-        calculateTotal(updatedCartItems);
-        toast.success("Item removed from cart");
-      } else {
-        setError("Failed to remove item from the cart.");
-      }
-    } catch (error) {
-      console.error("Error removing item:", error.response ? error.response.data : error.message);
-      setError("Server error while removing item from cart.");
-    }
+    return price ? `${parseFloat(price).toFixed(2)}` : "N/A";
   };
 
   return (
     <>
       <NavBar />
 
-      {cartItems ?<div className="container mx-auto p-6">
+      {! loading  ?<div className="container mx-auto p-6">
         <h1 className="text-2xl font-semibold mb-6">Shopping Cart</h1>
-
-
         {/* Cart Items Section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
-            {cartItems?.length === 0 ? (
+            {totalItem === 0 ? (
               <div className="flex flex-col items-center justify-center min-h-[50vh] text-center bg-gray-100 p-4">
               <div className="bg-white p-6 rounded-full shadow-md">
                 <ShoppingBagIcon className="h-16 w-16 text-gray-400" />
@@ -109,10 +45,9 @@ export default function ShoppingCart() {
             </div>
             ) : (
               <>    
-              {error && <p className="text-red-500">{error}</p>}
-              {cartItems?.map((item) => {
+              {Items?.map((item,ind) => {
                 return (
-                  <div key={item._id} className="flex flex-col md:flex-row items-center border p-4 rounded-lg">
+                  <div key={ind} className="flex flex-col md:flex-row items-center border p-4 rounded-lg">
                     <Image
                       height={96}
                       width={96}
@@ -123,7 +58,7 @@ export default function ShoppingCart() {
                     <div className="flex-grow">
                       <div className="flex items-center gap-2 mt-2">
                         <span className="text-[#1E1E1E] font-semibold text-base">
-                          {formatPrice(item.price)}
+                          {formatPrice(item.discountedPrice)}
                         </span>
 
                       </div>
@@ -138,12 +73,16 @@ export default function ShoppingCart() {
                         <Button className="mt-4 bg-[#F8C0BF] hover:bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm">
                           Add to Wishlist
                         </Button>
-                        <Button
-                          className="mt-4 bg-[#fe6161] hover:text-black transition-colors duration-300 py-2 px-4 rounded-md w-full capitalize text-sm"
-                          onClick={() => handleRemoveFromCart(item._id)}
+                       {loadingRemoveProduct === item.productId ? <button
+                          className="mt-4 border-2  bg-gray-500 text-[#F8C0BF] duration-300 py-2 px-4 rounded-md w-full capitalize text-sm"
+                        >
+                          Removing...
+                        </button> : <Button
+                          className="mt-4 border-2 border-gray-500 bg-white text-black hover:bg-[#F8C0BF] transition-colors hover:border-[#F8C0BF] duration-300 py-2 px-4 rounded-md w-full capitalize text-sm"
+                          onClick={()=>dispatch(removefromCart(item.productId))}
                         >
                           Remove
-                        </Button>
+                        </Button>}
                       </div>
                     </div>
                   </div>
@@ -161,6 +100,18 @@ export default function ShoppingCart() {
               <span>Estimated Total:</span>
               <span className="font-bold">{formatPrice(totalPrice)}</span>
             </div>
+            <div className="flex justify-between mb-4">
+              <span>Discount :</span>
+              <span className="font-bold">-{formatPrice(discounte)}</span>
+            </div>
+            <div className="flex justify-between mb-4">
+              <span>Cart Total:</span>
+              <span className="font-bold">{formatPrice(totalDiscountedPrice)}</span>
+            </div>
+            {/* <div className="flex justify-between mb-4">
+              <span>Coupon Applied:</span>
+              <span className="font-bold">{-formatPrice(200)}</span>
+            </div> */}
             <div className="space-y-2">
               <input
                 type="text"
@@ -174,7 +125,7 @@ export default function ShoppingCart() {
           </div>
         </div>
 
-        {cartItems?.length ? <div className="mt-8">
+        {totalItem !== 0 ? <div className="mt-8">
           <button className="w-full py-3 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600"
            onClick={()=>navigate.push('/delivery')}>
             Checkout Securely

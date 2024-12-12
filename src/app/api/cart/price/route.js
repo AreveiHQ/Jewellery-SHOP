@@ -1,38 +1,59 @@
+
 import { NextResponse } from 'next/server';
 import Cart from '@/models/cartModel';
 import { connect } from '@/dbConfig/dbConfig';
 import { UserAuth } from '@/utils/userAuth';
-
-connect();
-
-export async function GET(request) {
-  const userId = UserAuth(request); // Assume `userId` is retrieved from a middleware after authentication
-
+import couponModel from '@/models/couponModel';
+export async function POST(req) {
+  await connect()
   try {
-    const cart = await Cart.findOne({ userId }).populate('items.productId');
+    const userId =  await UserAuth();
+    const { couponCode } = await req.json();
+    const cart = await Cart.findOne({ userId }).populate('items.productId');// Populate product details
     if (!cart) {
-      return NextResponse.json({ message: 'Cart not found' }, { status: 404 });
+      return NextResponse.json({ errorType:"EMPTY",message: 'Cart is Empty' }, { status: 404 });
     }
+    let totalPrice = 0;
+    let totalDiscountedPrice = 0;
+    let totalItem = 0;
 
-    const total = cart.items.reduce((acc, item) => {
-      const price = item.productId?.price; // Optional chaining
-      const quantity = item.quantity || 1; // Default to 1 if quantity is not defined
+    cart.items.forEach((item) => {
+      totalPrice += item.productId.price * item.quantity;
+      totalItem+=item.quantity;
+      totalDiscountedPrice += item.productId.discountPrice * item.quantity;
+    });
+    let discounte = totalPrice - totalDiscountedPrice;
+    let cartTotal = totalDiscountedPrice;
+    if(couponCode){
+    const coupon = await couponModel.findOne({
+      code: couponCode,
+      validUntil: { $gte: new Date() },
+    });
+    if (!coupon) {
+      return NextResponse.json({ errorType:"COUPON",message: 'Invalid or Expired Coupon Code' }, { status: 404 });
+    }
+    if(minimumOrderValue > totalDiscountedPrice ){
+      return NextResponse.json({ errorType:"COUPON",message: 'Copuon not reach minimum order value ' }, { status: 403 });
+}
+if (coupon.usedCount >= coupon.usageLimit) {
+  return NextResponse.json({ errorType:"COUPON",message: 'Expired Coupon Code' }, { status: 403 });
+}
 
-      // Log for debugging
-      console.log(`Item ID: ${item.productId?._id}, Price: ${price}, Quantity: ${quantity}`);
+// Apply coupon logic
+ let  couponDiscount  = 0;
+if (coupon.discountType === 'fixed') {
+  couponDiscount =  coupon.discountValue;
+} else if (coupon.discountType === 'percentage') {
+  couponDiscount = (totalDiscountedPrice * coupon.discountValue) / 100;
+}
+ cartTotal =Math.max(0, totalDiscountedPrice-couponDiscount);
 
-      if (typeof price !== 'number' || isNaN(price)) {
-        console.error(`Invalid price for item ${item.productId?._id}: ${price}`);
-        return acc; // Skip this item
-      }
-
-      return acc + price * quantity; // Calculate total
-    }, 0).toFixed(2);
- // Calculate total and fix to 2 decimal points
-
-    return NextResponse.json({ total }, { status: 200 });
+// Save applied coupon to cart
+return NextResponse.json({ successType:"COUPON" ,message: 'Coupon Applied',couponCode,couponDiscount,discounte,cartTotal,totalPrice,totalDiscountedPrice,totalItem,items:cart.items}, { status: 200 });
+  }
+  return NextResponse.json({ message: 'Cart Total',discounte,cartTotal,totalPrice,totalDiscountedPrice,totalItem,items:cart.items}, { status: 200 });
   } catch (error) {
-    console.error('Error fetching cart:', error); // Log the error for debugging
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    console.log(error)
+    return NextResponse.json({ error: error.message,message:'Server error in getting price'}, { status: 500 });
   }
 }

@@ -1,83 +1,39 @@
 "use client"
 import Image from "next/image";
 
-import {  Carousel } from "@/MaterialTailwindNext";
+import {   } from "@/MaterialTailwindNext";
 import Customers from "./Customers";
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import RelatedProducts from "../RelatedProducts";
-// const products = [
-//     {
-//       id: 1,
-//       name: "Silver Earing for Birthday",
-//       price: "Rs. 543",
-//       oldPrice: "Rs. 634",
-//       rating: "4.3",
-//       imageUrl: "/images/Prod1.png", // Replace with actual path
-//     },
-//     {
-//       id: 2,
-//       name: "Silver Earing for Birthday",
-//       price: "Rs. 543",
-//       oldPrice: "Rs. 634",
-//       rating: "4.3",
-//       imageUrl: "/images/Prod2.png", // Replace with actual path
-//     },
-//     {
-//       id: 3,
-//       name: "Silver Earing for Birthday",
-//       price: "Rs. 543",
-//       oldPrice: "Rs. 634",
-//       rating: "4.3",
-//       imageUrl: "/images/Prod3.png", // Replace with actual path
-//     },
-//     {
-//       id: 4,
-//       name: "Silver Earing for Birthday",
-//       price: "Rs. 543",
-//       oldPrice: "Rs. 634",
-//       rating: "4.3",
-//       imageUrl: "/images/Prod4.png", // Replace with actual path
-//     },
-//     {
-//       id: 5,
-//       name: "Silver Earing for Birthday",
-//       price: "Rs. 543",
-//       oldPrice: "Rs. 634",
-//       rating: "4.3",
-//       imageUrl: "/images/Prod5.png", // Replace with actual path
-//     },
-//     {
-//       id: 6,
-//       name: "Silver Earing for Birthday",
-//       price: "Rs. 543",
-//       oldPrice: "Rs. 634",
-//       rating: "4.3",
-//       imageUrl: "/images/Prod6.png", // Replace with actual path
-//     },
-//     {
-//       id: 7,
-//       name: "Silver Earing for Birthday",
-//       price: "Rs. 543",
-//       oldPrice: "Rs. 634",
-//       rating: "4.3",
-//       imageUrl: "/images/Prod7.png", // Replace with actual path
-//     },
-//     {
-//       id: 8,
-//       name: "Silver Earing for Birthday",
-//       price: "Rs. 543",
-//       oldPrice: "Rs. 634",
-//       rating: "4.3",
-//       imageUrl: "/images/Prod8.png", // Replace with actual path
-//     },
-//     // Add more products...
-//   ];
+import { useDispatch, useSelector } from "react-redux";
+import { AddwishList } from "@/lib/reducers/productbyIdReducer";
+import { FaHeart, FaHeartCircleCheck, FaShare } from "react-icons/fa6";
+import { RWebShare } from "react-web-share";
+import toast from "react-hot-toast";
+import { usePathname } from "next/navigation";
+import { FaRegHeart } from "react-icons/fa";
+import {
+    Carousel,
+  Button,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
 
+  IconButton,
+  Typography,
+  Card,
+} from "@/MaterialTailwindNext";
 export default function Product({ id }) {
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [error, setError] = useState(null);
+    const [open, setOpen] =useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+ 
+  const handleOpen = () => setOpen((cur) => !cur);
+  const handleIsFavorite = () => setIsFavorite((cur) => !cur);
 
     useEffect(() => {
         if (id) {
@@ -102,6 +58,7 @@ export default function Product({ id }) {
            <div className="w-full lg:w-[40%]">
             <div className="p-3 bg-[#F3F3F3] rounded-md md:mx-9  sticky top-24">
             <div className="flex item-center justify-center rounded-md p-2">
+
             <Carousel
             className="rounded-xl w-[500px]  md:w-full  max-w-[500px] md:max-w-none pb-16"
             navigation={({ setActiveIndex, activeIndex }) => (
@@ -121,7 +78,7 @@ export default function Product({ id }) {
                 ))}
                 </div>
             )}
-            >
+            onClick={handleOpen}>
                 {product?.images?.map((img,ind)=><Image
                 width={400}
                 height={400}
@@ -131,13 +88,98 @@ export default function Product({ id }) {
                     className="object-contain w-full h-auto "
                 />)}
                 </Carousel>
+    
+                
             </div>
-        
+            <>
+     
+     
+     
+       <Dialog size="xl" open={open} handler={handleOpen}>
+        <DialogHeader className="justify-between">
+          <div className="flex items-center gap-3">
+          
+            <div className="-mt-px flex flex-col">
+              <Typography
+                variant="small"
+                color="blue-gray"
+                className="font-medium"
+              >
+               {product?.name}
+              </Typography>
+       
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <IconButton
+              variant="text"
+              size="sm"
+              color={isFavorite ? "red" : "blue-gray"}
+              onClick={handleIsFavorite}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-5 w-5"
+              >
+                <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+              </svg>
+            </IconButton>
+            <Button
+            size="sm"
+            variant="outlined"
+            color="blue-gray"
+            className="mr-5 flex items-center"
+          >
+            Share
+          </Button>
+          </div>
+        </DialogHeader>
+        <DialogBody>
+        <Carousel
+            className="h-[70vh] rounded-xl w-[500px]  md:w-full  max-w-[500px] md:max-w-none pb-16"
+            navigation={({ setActiveIndex, activeIndex }) => (
+                <div className="absolute bottom-0 left-2/4 z-50 flex -translate-x-2/4 gap-2 ">
+                {product?.images?.map((img, i) => (
+                    <Image
+                    width={1000}
+                    height={1000}
+                    src={img}
+                    key={`productDetails ${i}`}
+                    alt={`productDetails ${i}`}
+                    className={`block my-auto cursor-pointer rounded-2xl transition-all content-[''] border-2  ${
+                        activeIndex === i ? "w-16 h-16  bg-white border-pink-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
+                    }`}
+                    onClick={() => setActiveIndex(i)}
+                    />
+                ))}
+                </div>
+            )}
+            >
+                {product?.images?.map((img,ind)=><Image
+                width={400}
+                height={400}
+                    src={img}
+                    alt={`Product${ind}`}
+                    key={`Product${ind}`}
+                    className="object-contain w-full h-full "
+                />)}
+                </Carousel>
+        </DialogBody>
+        <DialogFooter className="justify-between">
+       
+          
+        </DialogFooter>
+      </Dialog>
+    </>
+
         </div>
             </div>
 
             <div className="w-full lg:w-[60%] px-4 lg:px-0">
-                <ProductInfo info={product} />
+                <ProductInfo info={product} productId={id} />
                 <RelatedProducts relatedProducts={relatedProducts} />
                 <Customers productId={id} />
             </div>
@@ -194,10 +236,14 @@ export default function Product({ id }) {
 // }
 
 
+function ProductInfo({info,productId}) {
+    const pathname = usePathname();
+    const dispatch = useDispatch();
+    const {user}= useSelector((state)=>state.user);
+    const currentUrl = typeof window !== 'undefined' 
+    ? `${window.location.origin}${pathname}` 
+    : '';
 
-
-
-function ProductInfo({info}) {
     return (
         <div className="py-4 pr-4 max-w-[800px]">
             <h2 className="text-xl font-semibold">
@@ -205,8 +251,19 @@ function ProductInfo({info}) {
             </h2>
             <div className="flex py-2">
                 <p className="text-sm text-gray-600">Made with 925 Silver |</p>
-                <button className="text-[#BC264B] text-sm mx-3 underline">Add to wishlist</button>
-                <button className="text-[#BC264B] text-sm mx-2 underline">Share</button>
+                {user?.wishList.some((item)=>item?._id===productId) ?<button className="text-[#BC264B] text-sm mx-3 underline" onClick={()=>dispatch(AddwishList(productId))}><FaHeartCircleCheck  fontSize={20}/></button>
+                :<button className=" text-sm mx-3 underline" onClick={()=>dispatch(AddwishList(productId))}><FaRegHeart  fontSize={20}/></button>}
+                
+                <RWebShare
+                data={{
+                    text: info?.name,
+                    url: currentUrl,
+                    title: "Jenii - A JP Sterling Silver Brand | Premium Sterling Silver Jewellery",
+                }}
+                onClick={() => toast.success("shared successfully!")}
+            >
+               <button className="text-pink-300 text-sm  underline"><FaShare fontSize={20}/></button>
+            </RWebShare>
             </div>
             <div className="mt-2">
                 {/* <span className="p-2 bg-[#D9D9D9] rounded text-sm">★ {info?.averageRating.toFixed(1)}</span> */}

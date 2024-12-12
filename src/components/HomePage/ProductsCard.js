@@ -3,12 +3,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "@/MaterialTailwindNext";
 import Image from "next/image";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getServerCookie } from "@/utils/serverCookie";
 import Skel from '@skel-ui/react';
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "@/lib/reducers/cartReducer";
 
 const products = [
   {
@@ -83,8 +85,10 @@ const categories = [
 ];
 
 export default function ProductsCard() {
-  const [loadingProductId, setLoadingProductId] = useState(null);
   const [getProducts,setProducts] = useState(null)
+  const {user} = useSelector((store)=>store.user);
+  const dispatch = useDispatch();
+
   const handleGetProducts = async () => {
     try {
       const response = await axios.get("/api/products",{
@@ -150,47 +154,16 @@ export default function ProductsCard() {
   };
 
   const handleAddToCart = async (product) => {
-    const token = await getServerCookie('token');
 
     // Check if the user is logged in
-    if (!token) {
-      toast.info("Please log in to add products to your cart!");
+    if (!user) {
+      toast.error("Please log in to add products to your cart!");
       return;
     }
 
-    setLoadingProductId(product._id); // Use product.id here, not product._id
-
-    // Clean the price values before sending to the server
-    const cleanPrice = parseFloat(product.discountPrice);
-    const productData = {
-      productId: product._id,
-      img_src: product.images[0],
-      name: product.name,
-      price: cleanPrice, 
-      quantity: 1,
-    };
-    console.log(productData)
-
-    try {
-      console.log(token);
-      const response = await axios.post("/api/cart/add", productData, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-      });
-
-      console.log("Product added to cart:", response.data);
-      toast.success("Product added to cart!");
-    } catch (err) {
-      console.error("Error adding to cart:", err.response ? err.response.data : err.message);
-      toast.error("Failed to add product to cart!");
-    } finally {
-      setLoadingProductId(null);
-    }
+    dispatch(addToCart({productId:product._id,quantity:1}))
   };
-
+  const {loadingProductId} = useSelector((state)=>state.cart)
 
   return (
     <div className="max-w-7xl mx-auto p-2 sm:p-4">
@@ -217,9 +190,9 @@ export default function ProductsCard() {
                     <span className="text-[#1E1E1E] font-semibold text-sm md:text-base ">
                       {formatPrice(product.discountPrice)}
                     </span>
-                    <span className=" text-[#F42222] text-xs  line-clamp-1">
-                      {product.discountPercent}% Off
-                    </span>
+                    <strike className=" text-[#F42222] text-xs  line-clamp-1">
+                      {formatPrice(product.price)}
+                    </strike>
                   </div>
                   <div className="text-sm text-gray-500  flex justify-center items-center gap-2 w-[40px]">
                     <span className="text-[#F42222]">★</span>
@@ -259,11 +232,11 @@ export default function ProductsCard() {
       {/* Shop by Category Section */}
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6 text-center">Shop by Category</h2>
-        <div className="flex justify-center gap-4">
+        <div className="flex justify-center gap-4 max-w-5xl mx-auto">
           {categories.map((category) => (
             <div
               key={category.id}
-              className="relative bg-white rounded-lg overflow-hidden shadow-lg w-40 h-60"
+              className="relative bg-white rounded-lg overflow-hidden  min-w-40 w-1/2 "
             >
               <Image
                 width={133}
@@ -272,9 +245,9 @@ export default function ProductsCard() {
                 alt={category.name}
                 className="object-cover w-full h-full"
               />
-              <div className="absolute bottom-0 w-full text-center bg-black bg-opacity-50 p-2 text-white">
+              {/* <div className="absolute bottom-0 w-full text-center bg-black bg-opacity-50 p-2 text-white">
                 {category.name}
-              </div>
+              </div> */}
             </div>
           ))}
         </div>
@@ -287,20 +260,20 @@ export default function ProductsCard() {
           {products.map((product) => (
             <div
               key={product.id}
-              className="bg-white shadow-md rounded-lg p-4 text-center hover:shadow-md"
+              className=" shadow-md rounded-lg p-2 text-center hover:shadow-md"
             >
               <Image
                 width={133}
                 height={150}
                 src={product.imageUrl}
-                alt={product.name}
-                className="w-full h-40 object-cover rounded-lg mb-4"
+                alt={product.itemName}
+                className="w-full h-52 object-cover rounded-lg mb-4"
               />
-              <div className="text-gray-600">{product.name}</div>
+              <div className="text-gray-600">{product.itemName}</div>
               <div className="flex justify-center items-center gap-2 mt-2">
-                <span className="text-red-500 text-lg">{product.price}</span>
+                <span className="text-red-500 text-lg">{product.cost}</span>
                 <span className="line-through text-gray-400">
-                  {product.oldPrice}
+                  {product.oldCost}
                 </span>
               </div>
               <div className="text-sm text-gray-500 mt-2">

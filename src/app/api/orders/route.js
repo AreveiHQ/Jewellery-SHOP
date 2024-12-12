@@ -49,6 +49,7 @@ export async function GET(request) {
   await connect();
   try {
     const userId =  UserAuth(request); // Assume userId is set in middleware
+    
     const orders = await Order.find({ userId });
 
     if (!orders || orders.length === 0) {

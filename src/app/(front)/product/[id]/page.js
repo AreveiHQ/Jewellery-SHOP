@@ -8,7 +8,6 @@ export  default async function Page({ params }) {
         <div className="p-0 md:p-2">
             <Product id={id} />
         </div>
-
        <Footer/>
     </>
     )

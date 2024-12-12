@@ -47,7 +47,7 @@ export default function SignUp() {
     <>
       <NavBar />
 
-      <div className="flex justify-center items-center min-h-[80vh] py-0 sm:py-10 bg-gray-100">
+      <div className="flex justify-center items-center min-h-[100vh] py-0 sm:py-10 bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
           <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">Sign Up</h2>
           <form onSubmit={handleSubmit(onSubmit)}>

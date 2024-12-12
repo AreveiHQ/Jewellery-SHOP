@@ -1,6 +1,6 @@
 "use client";
 import { Button, Input } from "@material-tailwind/react";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import debounce from "lodash/debounce";
 import { CiSearch } from "react-icons/ci";
 
@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 
 export default function Search() {
     const [query, setQuery] = useState("");
-    const [products, setProducts] = useState([]);
     const [suggestions, setSuggestions] = useState([]);
     const router = useRouter();
 
@@ -85,7 +84,7 @@ export default function Search() {
                 Search
             </Button>
             
-            <ProductList products={products} />
+            {/* <ProductList products={products} /> */}
         </div>
     );
 }

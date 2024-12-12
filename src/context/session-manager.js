@@ -1,20 +1,24 @@
 "use client"
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserProfile } from "@/lib/reducers/userReducer";
 
 const SessionManager = () => {
   const { data: session, status } = useSession();
-  const [user,setUsers]=  useState(false);
+  const dispatch = useDispatch();
+  const {user} = useSelector((store)=>store.user);
   useEffect(() => {
     if (!user && status === "authenticated" && session?.expires) {
       const expirationTime = session?.expires*1000 ;
       const currentTime = Date.now();
       console.log(currentTime,expirationTime)
       const timeUntilExpiration = expirationTime - currentTime;
+      console.log(session)
       console.log(timeUntilExpiration);
 
       if (timeUntilExpiration > 0) {
-        setUsers(true);
+        dispatch(getUserProfile());
         const timer = setTimeout(() => {
           alert("Your session has expired. Please log in again.");
           signOut(); // Redirect to the login page
@@ -28,7 +32,7 @@ const SessionManager = () => {
         signOut();
       }
     }
-  }, [session, status]);
+  }, [session,status]);
 
   return null; // This component doesn't render anything visually
 };

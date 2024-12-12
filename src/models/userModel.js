@@ -24,6 +24,17 @@ const userSchema = new mongoose.Schema({
             message: 'Invalid email format',
         },
     },
+    cart:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Cart',
+    },
+    ItemsInCart:{
+        type:Number,
+    },
+    wishList:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+    }],
     profilePhoto:{
         type:String,
     },

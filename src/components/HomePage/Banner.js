@@ -1,46 +1,41 @@
 "use client"
 import { Carousel } from "@/MaterialTailwindNext";
-import axios from "axios";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { getAboutSlides, getHeroSlides } from "@/lib/reducers/slidesReducer";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 export default function Banner() {
-  const [slides,setSlides] = useState([])
-  const [slideLoader,setSlideLoader] = useState(false)
-  const handleGetSlides = async () => {
-    setSlideLoader(true)
-    try {
-      const response = await axios.get(`/admin/slides/`,{
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      console.log("Slides Get", response.data.slides);
-      setSlides(response.data.slides)
-      setSlideLoader(false)
-    } catch (err) {
-      console.error("Error getting Slides", err.response ? err.response.data : err.message);
-      toast.error("Failed to get Slides ");
-      setSlideLoader(false)
-    }
+  const dispatch = useAppDispatch();
 
-  };
+  const {aboutSlides,heroloading,isaboutfetched,aboutFetcherror}= useAppSelector((state)=>state.slides)
   useEffect(()=>{
+    const handleGetSlides = async () => {
+      try {
+        if(!isaboutfetched){
+          dispatch(getAboutSlides())
+        }
+      } catch (err) {
+        console.error("Error getting Slides", aboutFetcherror);
+        toast.error("Error getting Slides")
+      }
+  
+    };
     handleGetSlides();
   },[])
-  if(slideLoader){
-    return <div className="w-full h-[clamp(12rem,30vw,40rem)] bg-gray-200 shimmer rounded-lg" />
+  if(heroloading){
+    return <div className="mx-auto h-[clamp(8rem,16vw,26rem)] w-[96%] bg-gray-200 shimmer rounded-xl" />
    }
         return (
                 <>
      <Carousel className="rounded-xl h-[clamp(8rem,16vw,26rem)] w-[96%] mx-auto" 
      autoplay autoplayDelay={10000} loop
      >
-      {slides?.map((item,index)=>  
+      {aboutSlides?.map((item,index)=>  
        {return <Image width={900} height={300} 
         loading="lazy"
        key={index}
-         src={item.images}
+         src={item.desktopBannerImage}
          alt={`Banner ${index}`}
          className="h-full w-full object-cover"
        />})}

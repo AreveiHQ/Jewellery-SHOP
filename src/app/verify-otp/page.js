@@ -35,7 +35,7 @@ export default function VerifyOtp() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center min-h-screen">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-semibold text-center mb-6">Verify OTP</h2>
         <form onSubmit={handleSubmit}>
