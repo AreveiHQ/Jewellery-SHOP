@@ -41,7 +41,7 @@ export async function POST(request) {
         }, { status: 201 });
 
     } catch (err) {
-  
+        console.log(err)
         return NextResponse.json({
             errors:err.isOperational?err:err.message,
             message: err.isOperational ? err.message : "Internal Server Error",

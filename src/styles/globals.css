@@ -31,7 +31,17 @@ body {
   overflow: hidden;
   background-color: #e0e0e0;
 }
+.swiper-custom-bullet {
+  height: 2px;
+  width: 2px;
+  background-color: white;
+}
 
+.swiper-custom-bullet.swiper-custom-bullet-active {
+  height: 2px;
+  width: 2px;
+  background-color: orange;
+}
 .shimmer::after {
   content: "";
   position: absolute;

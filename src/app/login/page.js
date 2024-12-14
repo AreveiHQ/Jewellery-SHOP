@@ -126,8 +126,8 @@ export default function Login() {
                 Forgot password?
               </Link>
              {loading? <button type="button" className="bg-[#fe6161]  h-max w-max rounded-lg text-white font-bold  hover:cursor-not-allowed duration-[500ms,800ms]" disabled>
-              <div class="flex gap-1 items-center justify-center m-[10px]"> 
-            <div class="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4"></div>
+              <div className="flex gap-1 items-center justify-center m-[10px]"> 
+            <div className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4"></div>
             Processing...
         </div>
             

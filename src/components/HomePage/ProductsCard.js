@@ -183,7 +183,7 @@ export default function ProductsCard() {
                 loading="lazy"
                 src={product.images[0]}
                 alt={product.name}
-                className="w-full h-[clamp(10rem ,12vw,14rem)] object-cover rounded-lg "
+                className="w-full h-[clamp(11rem,18vw,20rem)] object-cover rounded-lg "
               />
                 <div className="flex justify-between items-center gap-2 mt-2">
                   <div className="flex  items-center gap-x-2  line-clamp-1 w-[90%]">
@@ -267,7 +267,7 @@ export default function ProductsCard() {
                 height={150}
                 src={product.imageUrl}
                 alt={product.itemName}
-                className="w-full h-52 object-cover rounded-lg mb-4"
+                className="w-full h-52 object-cover rounded-lg mb-4 "
               />
               <div className="text-gray-600">{product.itemName}</div>
               <div className="flex justify-center items-center gap-2 mt-2">

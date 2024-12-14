@@ -44,7 +44,8 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     addresses:[{
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Address"
 }],
     otp: {
         type: String

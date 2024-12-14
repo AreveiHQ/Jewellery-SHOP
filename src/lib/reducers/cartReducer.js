@@ -107,8 +107,19 @@ const initialState = {
             localStorage.setItem("cart", JSON.stringify(state.items));
           },
           clearCart: (state) => {
-            state.items = [];
             localStorage.removeItem("cart");
+            return {...state, openSideCart:false,
+              loadingProductId:null,
+              loadingRemoveProduct:null,
+              totalItem:0,
+              Items:[],
+              totalPrice:0,
+              discounte:0,
+              totalDiscountedPrice:0,
+              
+              loading: false,
+              error: null,
+              isFetched:false,};
           },
           setLoggedIn: (state, action) => {
             state.isLoggedIn = action.payload;
@@ -151,7 +162,7 @@ const initialState = {
           data=state.Items;
         }
         else{
-          data =[...state.Items,action.payload.item]
+          data = state.Items? [...state.Items,action.payload.item] : [action.payload.item]
         }
         state.Items = data;
         const { discounte,totalPrice, totalDiscountedPrice, totalItem } = calculateTotals(data);

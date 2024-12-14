@@ -28,21 +28,17 @@ function CustomNavigation() {
   return (
     <>
       <IconButton
-        isCircular
         size="lg"
-        variant="ghost"
         onClick={() => swiper.slidePrev()}
-        className=" !absolute left-2 top-1/2 z-10 -translate-y-1/2"
+        className=" !absolute left-2 top-1/2 z-10 -translate-y-1/2 bg-transparent shadow-none"
       >
         <NavArrowLeft className="h-7 w-7 -translate-x-0.5 stroke-2" />
       </IconButton>
 
       <IconButton
-        isCircular
         size="lg"
-        variant="ghost"
         onClick={() => swiper.slideNext()}
-        className=" !absolute right-2 top-1/2 z-10 -translate-y-1/2"
+        className=" !absolute right-2 top-1/2 z-10 -translate-y-1/2 bg-transparent shadow-none"
       >
         <NavArrowRight className="h-7 w-7 translate-x-px stroke-2" />
       </IconButton>
@@ -50,7 +46,7 @@ function CustomNavigation() {
   );
 }
 function customPagination(_, className) {
-  return <span class="${className} w-4 h-4 [&.swiper-pagination-bullet-active]:!opacity-100 [&.swiper-pagination-bullet-active]:[background:rgb(var(--color-background))] !opacity-50 ![background:rgb(var(--color-background))]"></span>;
+  return <span className="${className} w-4 h-4 [&.swiper-pagination-bullet-active]:!opacity-100 [&.swiper-pagination-bullet-active]:[background:rgb(var(--color-background))] !opacity-50 ![background:rgb(var(--color-background))]"></span>;
 }
  
 export default function HeroSlider() {
@@ -94,9 +90,14 @@ export default function HeroSlider() {
       <Swiper
       grabCursor
       loop
-        pagination={{
-          enabled: true,clickable: true,
-        }}
+      pagination={{
+        el: "#containerForBullets",
+        type: "bullets",
+        bulletClass: "swiper-custom-bullet",
+        bulletActiveClass: "swiper-custom-bullet-active",
+        clickable: true,
+      }}
+        
         modules={[Navigation, Pagination,Autoplay]}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
         className="relative rounded-lg [&_div.swiper-button-next]:text-background [&_div.swiper-button-prev]:text-background cursor-pointer bg-blue-gray-50 h-[clamp(12rem,30vw,40rem)]"

@@ -55,15 +55,15 @@ export default function Product({ id }) {
 
     return (
         <div className="flex flex-col lg:flex-row gap-2 ">
-           <div className="w-full lg:w-[40%]">
-            <div className="p-3 bg-[#F3F3F3] rounded-md md:mx-9  sticky top-24">
-            <div className="flex item-center justify-center rounded-md p-2">
+           <div className="w-full md:w-[90%] lg:w-[40%] mx-auto">
+            <div className="p-3 bg-[#F3F3F3] rounded-md md:mx-9  sticky top-24  ">
+            <div className="flex item-center justify-center rounded-md p-2 ">
 
             <Carousel
-            className="rounded-xl w-[500px]  md:w-full  max-w-[500px] md:max-w-none pb-16"
+            className="rounded-xl w-[500px]  md:w-full  max-w-[500px] lg:max-w-none pb-16 "
 
             navigation={({ setActiveIndex, activeIndex }) => (
-                <div className="absolute bottom-0 left-2/4 z-50 flex -translate-x-2/4 gap-2">
+                <div className="max-h-[80vh]">
                 {product?.images?.map((img, i) => (
                     <Image
                     width={1000}

@@ -14,7 +14,7 @@ const razorpayInstance = new Razorpay({
 export async function POST(req) {
   await connect();
   try {
-    const {selectedDetails, firstName, lastName, contact, street, city, state, postalCode, landmark } = await req.json();
+    const {selectedDetails, firstName, lastName, contact, street, city, state, postalCode, landmark,isSaveAddress } = await req.json();
     const userId = await UserAuth();
     
     // Validate fields manually if Yup is not used
@@ -57,10 +57,8 @@ export async function POST(req) {
       if ((!firstName || !lastName || !contact || !street || !city || !state || !postalCode)) {
         return NextResponse.json({ message: 'Given fields are required' }, { status: 400 });
       }
-  
-      // Create and save new address
-      let address = new Address({
-        userId,
+
+      let addressObj = {
         firstName,
         lastName,
         contact,
@@ -69,14 +67,29 @@ export async function POST(req) {
         state,
         postalCode,
         landmark,
-      });
-      user.addresses = address._id;
+      }
+      if(!isSaveAddress){
+        return NextResponse.json({ message: 'Order created successfully', order:order , address:addressObj,amount:total}, { status: 200 });
+      }
+      
+  
+      // Create and save new address
+      let address = new Address({...addressObj,userId});
+      user.addresses.push(address._id);
       await user.save();
       await address.save();
-      return NextResponse.json({ message: 'Order created successfully', order:order , addressID:address._id}, { status: 200 });
+      return NextResponse.json({ message: 'Order created successfully', order:order , address:address,amount:total}, { status: 200 });
     }
-    // Confirm successful order creation
-    return NextResponse.json({ message: 'Order created successfully', order:order,addressID:selectedDetails}, { status: 200 });
+    else{
+      const address = await Address.findById(selectedDetails);
+      if (!address) {
+          return NextResponse.json({
+              message: " Address Not Found"
+          }, { status: 404 });
+      }
+      // Confirm successful order creation
+      return NextResponse.json({ message: 'Order created successfully', order:order,address,amount:total}, { status: 200 });
+    }
   } catch (error) {
     console.error('Error creating order:', error);
     return NextResponse.json({ message: 'Error creating Razorpay order', error: error.message }, { status: 500 });

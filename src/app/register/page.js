@@ -4,8 +4,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import NavBar from "@/components/HomePage/Navbar";
 import Link from 'next/link';
-import { toast } from 'react-toastify'; // Import Toastify components
+import { toast } from 'react-hot-toast'; // Import Toastify components
 import axios from 'axios';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 // Yup validation schema for sign-up
 const signupSchema = yup.object().shape({
@@ -26,8 +28,13 @@ export default function SignUp() {
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(signupSchema),
   });
+  const [loading,setLoading] = useState(false);
+  const [error,setError] = useState(null);
+  const navigate = useRouter();
 
   const onSubmit = async (data) => {
+    setLoading(true)
+    setError(null)
     try {
       const response = await axios.post('/api/users/signup', {
         name: data.name,
@@ -35,11 +42,16 @@ export default function SignUp() {
         phone: data.phone,
         password: data.password,
       });
+      setLoading(false)
       console.log('User created successfully:', response.data);
       toast.success('User created successfully!'); // Show success message
+      navigate.push('/login')
+
     } catch (error) {
+      setLoading(false)
+      setError(error.response?.data?.message);
       console.error('Error creating user:', error);
-      toast.error(error.response?.data?.errors || 'Error creating user.'); // Show error message
+      toast.error(error.response?.data?.message || 'Error creating user.'); // Show error message
     }
   };
 
@@ -108,14 +120,21 @@ export default function SignUp() {
 
             <div className="flex justify-between items-center mb-6">
               <Link href="/login" className="text-sm text-red-600 hover:underline">Already have an account? Login</Link>
-              <button
+           { loading?<button type="button" className="bg-[#fe6161]  h-max w-max rounded-lg text-white font-bold  hover:cursor-not-allowed duration-[500ms,800ms]" disabled>
+              <div class="flex gap-1 items-center justify-center m-[10px]"> 
+            <div className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4"></div>
+            Processing...
+        </div>
+            
+</button> : <button
                 type="submit"
                 className="px-4 py-2 bg-[#BC264B] text-white rounded-md hover:bg-red-700 transition-colors"
               >
                 Sign Up
-              </button>
+              </button>}
             </div>
           </form>
+              {error && <p  className="text-red-500 text-sm text-center">{error}</p>}
         </div>
       </div>
     </>

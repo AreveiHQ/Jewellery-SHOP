@@ -91,6 +91,12 @@ export default function ShoppingCart() {
               </>
             )
             }
+            {totalItem !== 0 ? <div className="mt-8">
+          <button className="w-full py-3 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600"
+           onClick={()=>navigate.push('/delivery')}>
+            Checkout Securely
+          </button>
+        </div>:""}
           </div>
 
           {/* Order Summary Section */}
@@ -123,14 +129,10 @@ export default function ShoppingCart() {
               </p>
             </div>
           </div>
+          
         </div>
 
-        {totalItem !== 0 ? <div className="mt-8">
-          <button className="w-full py-3 bg-pink-500 text-white font-semibold rounded-lg hover:bg-pink-600"
-           onClick={()=>navigate.push('/delivery')}>
-            Checkout Securely
-          </button>
-        </div>:""}
+        
       </div>:<CheckoutLoader/> }
 
       <Footer />

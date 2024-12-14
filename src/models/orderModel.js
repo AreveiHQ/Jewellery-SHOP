@@ -15,20 +15,59 @@ const orderSchema = new mongoose.Schema({
             ref: 'Product',
             required: true,
           },
-          quantity: Number,
+          quantity: { type: Number,
+          required: true},
           price: {
             type: Number,
             required: true,
           },
         },
       ],
-      paymentStatus: String,
+      payment:{
+        mode:{
+          type:String,
+          enum:["Prepaid","COD"],
+        },
       paymentId: String,
-      address: String,
-      orderStatus: String,
-      amount: Number,
       signature: String,
       orderId: String,
+      },
+      amount: {
+        type:Number,
+        required:true,
+      },
+      orderStatus: {
+        type:String,
+        required:true,
+        default:"PENDING"
+      },
+      orderID: {
+        type:String,
+        required:true,
+      },
+      customer: {
+        name:{
+          type:String,
+          required:true,
+        },
+        email:{
+          type:String,
+          required:true,
+        },
+        contact:{
+          type:String,
+          required:true,
+        },
+        address:{
+          type:String,
+          required:true,
+        },
+        shipmentID:String,
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now, // Automatically set to the current date
+      },
     },
   ],
 });

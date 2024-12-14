@@ -68,7 +68,7 @@ const OrderCart = () => {
       <h2 className="text-xl font-semibold mb-4">Cart</h2>
 
       {/* Scrollable Items */}
-      <div className="min-h-[300px] overflow-y-auto mb-4 bg-[#FBFBFB] ">
+      <div className=" min-h-0  lg:min-h-[300px] overflow-y-auto mb-4 bg-[#FBFBFB] ">
         {Items?.map((item) => (
            <div className="flex items-start p-2 my-2 mb-2">
            <div>

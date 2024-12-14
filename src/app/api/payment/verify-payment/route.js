@@ -7,10 +7,17 @@ import { connect } from '@/dbConfig/dbConfig';
 import User from '@/models/userModel';
 import Address from '@/models/addressModel';
 
+export const generateOrderId = (prefix = "ID#", length = 10) => {
+  const timestamp = Date.now().toString(); // Current timestamp
+  const randomDigits = Math.floor(Math.random() * Math.pow(10, length - timestamp.length))
+    .toString()
+    .padStart(length - timestamp.length, "0"); // Generate random digits to fill length
+  return `${prefix}${timestamp}${randomDigits}`.slice(0, length + prefix.length);
+};
 export async function POST(req) {
   await connect();
   try {
-    const { paymentId, addressID, amount, orderId, signature } = await req.json();
+    const { paymentId, address, amount, orderId, signature } = await req.json();
     const secret = process.env.RAZORPAY_SECRET; // Use environment variables for sensitive data
     const shasum = crypto.createHmac('sha256', secret);
     shasum.update(`${orderId}|${paymentId}`);
@@ -25,29 +32,36 @@ export async function POST(req) {
     if (!cart) {
       return NextResponse.json({ message: 'Cart not found' }, { status: 404 });
     }
-    const address = await Address.findById(addressID);
-        if (!address) {
-            return NextResponse.json({
-                message: " Address Not Found"
-            }, { status: 404 });
-        }
+
     let order = await Order.findOne({ userId });
     if (!order) {
       order = new Order({ userId, orders: [] });
     }
     order.orders.push({
-      items: cart.items.map(item => ({
+      items: cart.items.map((item) => 
+      {
+        console.log(item)
+        return {
         productId: item.productId,
         quantity: item.quantity,
         price:item.discountedPrice
-      })),
-      paymentStatus: 'confirmed',
-      paymentId,
-      address:`${address.firstName} ${address.lastName} , ${address.contact} , ${address.landmark} ${address.street} ${address.city} ${address.state}` ,
-      orderStatus: 'confirmed',
+      }}),
+
+      payment:{
+        mode:"Prepaid",
+        paymentId:paymentId,
+        signature:signature,
+        orderId:orderId,
+      },
+      customer:{
+        name:`${address.firstName} ${address.lastName}`,
+        email:user.email,
+        contact:address.contact,
+        address:`${address.landmark} ${address.street} ${address.city} ${address.state}`
+      },
+      orderStatus: "CONFIRMED",
       amount,
-      signature,
-      orderId,
+      orderID:generateOrderId()
     });
     await order.save();
     await Cart.findOneAndDelete({ userId }); // Clear the cart after placing the order
