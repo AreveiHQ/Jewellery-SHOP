@@ -9,7 +9,7 @@ export async function POST(request) {
   await connect();
   try {
     const { paymentId, address, amount, orderId, signature } = await request.json();
-    const userId =  UserAuth(request); // Assume userId is set in middleware
+    const userId = await UserAuth(); // Assume userId is set in middleware
 
     const cart = await Cart.findOne({ userId }).populate('items.productId');
     if (!cart) {
@@ -48,7 +48,7 @@ export async function POST(request) {
 export async function GET(request) {
   await connect();
   try {
-    const userId =  UserAuth(request); // Assume userId is set in middleware
+    const userId = await UserAuth(); // Assume userId is set in middleware
     
     const orders = await Order.find({ userId });
 

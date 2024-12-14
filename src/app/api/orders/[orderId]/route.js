@@ -6,7 +6,7 @@ import { UserAuth } from '@/utils/userAuth';
 export async function PATCH(request, { params }) {
   await connect();
   try {
-    const { orderId } = params;
+    const { orderId } = await params;
     const { status } = await request.json();
 
     const updatedOrder = await Order.findOneAndUpdate(
@@ -31,8 +31,8 @@ import axios from 'axios';
 export async function GET(request, { params }) {
   await connect();
   try {
-    const { orderId } = params;
-    const userId = UserAuth(request);
+    const { orderId } = await params;
+    const userId = await UserAuth();
 
     if (!userId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });

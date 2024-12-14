@@ -8,28 +8,16 @@ import {  useEffect, useState } from "react";
 import { getServerCookie } from "@/utils/serverCookie";
 import { Select, Option } from "@/MaterialTailwindNext";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAddress } from "@/lib/reducers/addressReducer";
 
 const DeliveryForm = () => {
   const navigate  = useRouter();
+  const dispatch  = useDispatch();
   const [AddressList, setAddressList] = useState([]);
-  const {address} = useSelector((state)=>state.user)
+  const {address} = useSelector((state)=>state.address)
   useEffect(() => {
-    
-    const fetchAddress = async () => {
-      const token = await getServerCookie("token");
-      try {
-        const { data } = await axios.get(`/api/users/address`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        console.log(data.address)
-        setAddressList(data.address);
-      } catch (err) {
-        console.error("Error fetching address:", err);
-      }
-    };
-     fetchAddress();
-
+    dispatch(getAddress())
   }, []);
   const [isNewAddress, setNewAddress] = useState(true);
   const validationSchema = Yup.object().shape({
@@ -57,14 +45,11 @@ const DeliveryForm = () => {
 
     try {
 
-      const token = await getServerCookie('token');
       setIsLoading(true);
       // Handle payment initiation or form submission here
-      const {data} = await axios.post("/api/payment/create-order" ,formdata,{
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const {address,order} = data;
-      const [name,contact,location] = address.split(',');
+      const {data} = await axios.post("/api/payment/create-order" ,formdata);
+      const {addressID,order} = data;
+    
       console.log(data)
       console.log("Order placed successfully");
       const { key, ...restProps } = {
@@ -77,22 +62,18 @@ const DeliveryForm = () => {
         order_id: order.id, // Backend Order ID
         handler: async function (response) {
           // Payment successful, send data to backend
+          console.log(response)
           const orderData = {
             paymentId: response.razorpay_payment_id,
             orderId: response.razorpay_order_id,
             signature: response.razorpay_signature,
             amount:(order.amount/100.00),
-            address: location,
+            addressID: addressID,
           };
 
           const result = await axios.post(
             `/api/payment/verify-payment/`,
-            orderData,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
+            orderData
           );
 
           console.log(result.data);
@@ -139,23 +120,23 @@ const DeliveryForm = () => {
       <h2 className="text-xl font-bold mb-4">Delivery</h2>
       <div class="mt-5 bg-white shadow cursor-pointer rounded-xl">
             <div class="flex">
-               <div class="flex-1 py-5 pl-5 overflow-hidden">
+               {/* <div class="flex-1 py-5 pl-5 overflow-hidden">
                   <ul>
-                     <li class="text-xs text-gray-600 uppercase ">Receiver</li>
-                     <li>Max Mustermann</li>
-                     <li>Musterstrasse 1</li>
-                     <li>4020 Linz</li>
+                     <li class="text-xs text-gray-600 uppercase ">Rishabh Katiyar</li>
+                     <li>6304832742</li>
+                     <li>Gaya prasad nagar , bilhaur kanpur nagar </li>
+                     <li>kanpur,Uttar Pradesh -202902</li>
                   </ul>
-               </div>
-               <div class="flex-1 py-5 pl-1 overflow-hidden">
+               </div> */}
+               {/* <div class="flex-1 py-5 pl-1 overflow-hidden">
                   <ul>
                      <li class="text-xs text-gray-600 uppercase">Sender</li>
                      <li>Rick Astley</li>
                      <li>Rickrolled 11</li>
                      <li>1000 Vienna</li>
                   </ul>
-               </div>
-               <div class="flex-none pt-2.5 pr-2.5 pl-1">
+               </div> */}
+               {/* <div class="flex-none pt-2.5 pr-2.5 pl-1">
                   <button type="button" class="px-2 py-2 font-medium tracking-wide text-black capitalize transition duration-300 ease-in-out transform rounded-xl hover:bg-gray-300 focus:outline-none active:scale-95">
                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
                         <path d="M0 0h24v24H0V0z" fill="none"></path>
@@ -163,11 +144,11 @@ const DeliveryForm = () => {
                         <path d="M20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29s-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83zM3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM5.92 19H5v-.92l9.06-9.06.92.92L5.92 19z"></path>
                      </svg>
                   </button>
-               </div>
+               </div> */}
             </div>
          </div>
 
-      <button type="button" class="relative w-full flex justify-center items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-black rounded-md hover:bg-gray-900  focus:outline-none   transition duration-300 transform active:scale-95 ease-in-out">
+      {/* <button type="button" class="relative w-full flex justify-center items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-black rounded-md hover:bg-gray-900  focus:outline-none   transition duration-300 transform active:scale-95 ease-in-out">
             <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
                <g>
                   <rect fill="none" height="24" width="24"></rect>
@@ -202,7 +183,7 @@ const DeliveryForm = () => {
                      <span class="pl-2 mx-1">Delete</span>
                   </button>
                </div>
-            </div>
+            </div> */}
       <div>
 
         
@@ -331,12 +312,12 @@ const DeliveryForm = () => {
 
       </div>
 
-      <h2 className="text-xl font-bold mb-4">Apply Coupon</h2>
+      {/* <h2 className="text-xl font-bold mb-4">Apply Coupon</h2>
       <input
         type="text"
         placeholder="Search"
         className="border bg-[#F2F2F2] text-black rounded-lg p-3 w-full md:w-1/2 mb-6"
-      />
+      /> */}
 
       <button
         type="submit"

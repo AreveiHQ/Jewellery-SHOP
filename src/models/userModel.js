@@ -28,9 +28,6 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Cart',
     },
-    ItemsInCart:{
-        type:Number,
-    },
     wishList:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',

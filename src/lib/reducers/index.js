@@ -5,6 +5,7 @@ import userReducer from "./userReducer"
 import productReducer from "./productbyIdReducer"
 import wishListReducer from "./wishlistReducer"
 import cartReducer from "./cartReducer"
+import addressReducer from "./addressReducer"
 
 const rootReducer = combineReducers({
         categories:categoryReducer,
@@ -13,5 +14,6 @@ const rootReducer = combineReducers({
         wishlist:wishListReducer,
         product:productReducer,
         cart:cartReducer,
+        address:addressReducer,
   })
   export default rootReducer;

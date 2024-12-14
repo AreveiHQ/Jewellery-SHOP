@@ -6,7 +6,7 @@ export async function GET(req) {
   await connect();
         try {
                 const userId = await  UserAuth();
-                const user = await User.findById(userId).select("-password").populate({path:"addresses"});
+                const user = await User.findById(userId).select("-password");
          if(!user){
           return NextResponse.json(
             {

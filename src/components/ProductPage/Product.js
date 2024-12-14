@@ -61,6 +61,7 @@ export default function Product({ id }) {
 
             <Carousel
             className="rounded-xl w-[500px]  md:w-full  max-w-[500px] md:max-w-none pb-16"
+
             navigation={({ setActiveIndex, activeIndex }) => (
                 <div className="absolute bottom-0 left-2/4 z-50 flex -translate-x-2/4 gap-2">
                 {product?.images?.map((img, i) => (
@@ -140,6 +141,7 @@ export default function Product({ id }) {
         <DialogBody>
         <Carousel
             className="h-[70vh] rounded-xl w-[500px]  md:w-full  max-w-[500px] md:max-w-none pb-16"
+            onTouchEnd={(e)=>e.changedTouches.identifiedTouch}
             navigation={({ setActiveIndex, activeIndex }) => (
                 <div className="absolute bottom-0 left-2/4 z-50 flex -translate-x-2/4 gap-2 ">
                 {product?.images?.map((img, i) => (
@@ -148,7 +150,7 @@ export default function Product({ id }) {
                     height={1000}
                     src={img}
                     key={`productDetails ${i}`}
-                    alt={`productDetails ${i}`}
+                    alt={`product))Details ${i}`}
                     className={`block my-auto cursor-pointer rounded-2xl transition-all content-[''] border-2  ${
                         activeIndex === i ? "w-16 h-16  bg-white border-pink-300" : "w-10 h-10 bg-white/50 border-blue-gray-100"
                     }`}

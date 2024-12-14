@@ -7,7 +7,7 @@ export async function POST(req) {
     await connect();
     try {
         const {firstName, lastName, contact,street, city, state, postalCode, landmark } = await req.json(); 
-        const userId =  UserAuth(req);
+        const userId = await UserAuth();
         const address = await Address.create({
             userId, 
             firstName, lastName, contact,
@@ -36,25 +36,24 @@ export async function POST(req) {
     }
 }
 
-export async function GET(req) {
+export async function GET() {
     await connect();
     try {
-        const userId =  UserAuth(req);
+        const userId =await  UserAuth();
         const address = await Address.find({userId});
         if (!address) {
             return NextResponse.json({
-                message: "Address Not Found"
+                address:[],
+                message: "No Address  Found"
             });
         }
 
-        return NextResponse.json({
-            address: address
-        });
+        return NextResponse.json({address},{status:200});
     } catch (err) {
         return NextResponse.json({
             message: "Server error",
             error: err.message
-        });
+        },{status:500});
     }
 }
 

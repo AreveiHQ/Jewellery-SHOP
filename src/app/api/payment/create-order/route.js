@@ -1,6 +1,7 @@
 import { connect } from '@/dbConfig/dbConfig';
 import Address from '@/models/addressModel';
 import Cart from '@/models/cartModel';
+import User from '@/models/userModel';
 import { UserAuth } from '@/utils/userAuth';
 import { NextResponse } from 'next/server';
 import Razorpay from 'razorpay';
@@ -14,25 +15,28 @@ export async function POST(req) {
   await connect();
   try {
     const {selectedDetails, firstName, lastName, contact, street, city, state, postalCode, landmark } = await req.json();
-    const userId = UserAuth(req);
+    const userId = await UserAuth();
     
     // Validate fields manually if Yup is not used
  
     // Find cart and ensure it exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return NextResponse.json({ message: 'User Exist' }, { status: 404 });
+    }
     const cart = await Cart.findOne({ userId });
     if (!cart) {
       return NextResponse.json({ message: 'Cart does not exist' }, { status: 404 });
     }
     const total = cart.items.reduce((acc, item) => {
-      const price = item.price; // Optional chaining
+      const price = item.discountedPrice; // Optional chaining
       const quantity = item.quantity || 1; // Default to 1 if quantity is not defined
 
       // Log for debugging
       console.log(`Item ID: ${item._id}, Price: ${price}, Quantity: ${quantity}`);
 
       if (typeof price !== 'number' || isNaN(price)) {
-        console.error(`Invalid price for item ${item.productId?._id}: ${price}`);
-        return acc; // Skip this item
+        return NextResponse.json({ message: 'Price is not a valid type' }, { status: 403 });
       }
 
       return acc + price * quantity; // Calculate total
@@ -66,11 +70,13 @@ export async function POST(req) {
         postalCode,
         landmark,
       });
+      user.addresses = address._id;
+      await user.save();
       await address.save();
-      return NextResponse.json({ message: 'Order created successfully', order:order , address:`${address.firstName} ${address.lastName} , ${address.contact} , ${address.landmark} ${address.street} ${address.city} ${address.state}` }, { status: 200 });
+      return NextResponse.json({ message: 'Order created successfully', order:order , addressID:address._id}, { status: 200 });
     }
     // Confirm successful order creation
-    return NextResponse.json({ message: 'Order created successfully', order:order,address:selectedDetails}, { status: 200 });
+    return NextResponse.json({ message: 'Order created successfully', order:order,addressID:selectedDetails}, { status: 200 });
   } catch (error) {
     console.error('Error creating order:', error);
     return NextResponse.json({ message: 'Error creating Razorpay order', error: error.message }, { status: 500 });

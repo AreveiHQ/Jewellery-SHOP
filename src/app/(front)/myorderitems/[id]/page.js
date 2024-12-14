@@ -1,7 +1,6 @@
 'use client';
 import Footer from '@/components/HomePage/Footer';
 import NavBar from '@/components/HomePage/Navbar';
-import { getServerCookie } from '@/utils/serverCookie';
 import axios from 'axios';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -16,14 +15,8 @@ export default function Page() {
         if (id) {
             async function fetchOrderItems() {
                 try {
-                    const token = await getServerCookie("token");
-                    console.log("Token:", token);
                     
-                    const response = await axios.get(`/api/orders/${id}`, {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
+                    const response = await axios.get(`/api/orders/${id}`);
                     console.log(response.data);
 
                     setOrderItems(response.data.items); // Update state with the response data
