@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 export default function FavoriteItems() {
   const dispatch = useDispatch();
-  const {wishlist,loading,loadWishlistRemove}  = useSelector((state)=>state.wishlist)
+  const {wishlist,loading,loadWishlist}  = useSelector((state)=>state.wishlist)
   const {loadingProductId} = useSelector((state)=>state.cart);
 
 
@@ -136,7 +136,7 @@ export default function FavoriteItems() {
                     Add to Cart
                   </button>
 }
-                  {loadWishlistRemove===item._id?<button className="text-gray-500 hover:text-red-500">
+                  {loadWishlist===item._id?<button className="text-gray-500 hover:text-red-500">
                   Removing
                 </button>:<button className="text-gray-500 hover:text-red-500" onClick={()=>dispatch(RemovewishList(item._id))}>
                     Remove

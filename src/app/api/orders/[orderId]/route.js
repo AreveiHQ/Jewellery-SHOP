@@ -26,7 +26,6 @@ export async function PATCH(request, { params }) {
   }
 }
 
-import axios from 'axios';
 
 export async function GET(request, { params }) {
   await connect();
@@ -38,42 +37,27 @@ export async function GET(request, { params }) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const orders = await Order.find({ userId });
+    const orders = await Order.find({ userId }).populate("orders.items.productId");
 
     if (!orders || orders.length === 0) {
       return NextResponse.json({ message: 'No orders found' }, { status: 404 });
     }
 
-    let matchedItems = [];
+    let Matchedorder;
     orders.forEach((order) => {
-      const matchingOrder = order.orders.find((ord) => ord.orderId === orderId);
+      const matchingOrder = order.orders.find((ord) => ord.orderID === orderId);
       if (matchingOrder) {
-        matchedItems = matchingOrder.items;
+        Matchedorder = matchingOrder;
       }
     });
 
-    if (matchedItems.length === 0) {
+    if (Matchedorder.items.length === 0) {
       return NextResponse.json({ message: 'No items found for the specified order ID' }, { status: 404 });
     }
 
-    // Fetch actual product data for each item
-    const productDetails = await Promise.all(
-      matchedItems.map(async (item) => {
-        try {
-          const response = await axios.get(`http://localhost:3000/api/products/${item.productId}`);
-          return {
-            ...item,
-            productDetails: response.data,
-          };
-          console.log(response.data)
-        } catch (error) {
-          console.error(`Error fetching product ${item.productId}:`, error);
-          return { ...item, productDetails: null }; // Handle failed product fetch gracefully
-        }
-      })
-    );
+    
 
-    return NextResponse.json({ items: productDetails }, { status: 200 });
+    return NextResponse.json({ order:Matchedorder}, { status: 200 });
   } catch (error) {
     console.error('Error fetching orders:', error);
     return NextResponse.json({ message: 'Server error' }, { status: 500 });

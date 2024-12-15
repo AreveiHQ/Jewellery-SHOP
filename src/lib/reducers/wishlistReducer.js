@@ -22,7 +22,6 @@ export const AddwishList = createAsyncThunk(
     try {
        await axios.post(`/api/wishlist/add`,{productId});
        toast.success("item added To wishlist");
-       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -33,7 +32,7 @@ export const RemovewishList = createAsyncThunk(
   async (productId, { rejectWithValue }) => {
     try {
        await axios.post(`/api/wishlist/remove`,{productId});
-       return response.data;
+
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -46,8 +45,7 @@ const wishlistSlice = createSlice({
   name: 'wishlist',
   initialState: {
     loading:false,
-    loadWishlistAdd:null,
-    loadWishlistRemove:null,
+    loadWishlist:null,
     wishListByID:[],
     wishlist:[],
   },
@@ -65,16 +63,16 @@ const wishlistSlice = createSlice({
       .addCase(getUserProfile.rejected, (state, action) => {
         state.error = action.payload;
       })
-      .addCase(AddwishList.pending, (state) => {
-        state.loadWishlistAdd = true;
+      .addCase(AddwishList.pending, (state,action) => {
+        state.loadWishlist = action.meta.arg;
       })
       .addCase(AddwishList.fulfilled, (state,action) => {
-        state.loadWishlistAdd = false;
-        state.wishListByID = state.wishListByID.push(action.meta.arg);
+        state.loadWishlist = null;
+        state.wishListByID =  state.wishListByID.length ? [...state.wishListByID,action.meta.arg] :[action.meta.arg];
         state.error = null;
       })
       .addCase(AddwishList.rejected, (state, action) => {
-        state.loadWishlistAdd = false;
+        state.loadWishlist = null;
         state.error = action.payload;
       })
       .addCase(getwishList.pending, (state) => {
@@ -90,16 +88,16 @@ const wishlistSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(RemovewishList.pending, (state,action) => {
-        state.loadWishlistRemove =  action.meta.arg;
+        state.loadWishlist =  action.meta.arg;
       })
       .addCase(RemovewishList.fulfilled, (state,action) => {
-        state.loadWishlistRemove = null;
-        state.wishListByID = state.wishListByID.filter((id)=> id === action.meta.arg);
-        state.wishlist = state.wishlist.filter((val)=> val._id=== action.meta.arg);
+        state.loadWishlist = null;
+        state.wishListByID = state.wishListByID.filter((id)=> id !== action.meta.arg);
+        state.wishlist = state.wishlist.filter((val)=>val._id !== action.meta.arg);
         state.error = null;
       })
       .addCase(RemovewishList.rejected, (state, action) => {
-        state.loadWishlistRemove = null;
+        state.loadWishlist = null;
         state.error = action.payload;
       })
   },

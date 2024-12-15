@@ -70,6 +70,22 @@ const cartSchema = new mongoose.Schema({
       },
     },
   ],
+  totalPrice:{
+    type: Number,
+    default: 0,
+  },
+  totalDiscountedPrice:{
+    type: Number,
+    default: 0,
+  },
+  totalItem:{
+    type: Number,
+    default: 0,
+  },
+  discounte:{
+    type: Number,
+    default: 0,
+  },
 
 });
 

@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import crypto from 'crypto';
 import Order from '@/models/orderModel';
-import Cart from '@/models/cartModel';
-import { UserAuth } from '@/utils/userAuth';
 import { connect } from '@/dbConfig/dbConfig';
-import User from '@/models/userModel';
 import Address from '@/models/addressModel';
+import Cart from '@/models/cartModel';
+import User from '@/models/userModel';
+import { UserAuth } from '@/utils/userAuth';
+import { NextResponse } from 'next/server';
 
 export const generateOrderId = (prefix = "ID", length = 10) => {
   const timestamp = Date.now().toString(); // Current timestamp
@@ -17,12 +17,7 @@ export const generateOrderId = (prefix = "ID", length = 10) => {
 export async function POST(req) {
   await connect();
   try {
-    const { paymentId, address, amount, orderId, signature } = await req.json();
-    const secret = process.env.RAZORPAY_SECRET; // Use environment variables for sensitive data
-    const shasum = crypto.createHmac('sha256', secret);
-    shasum.update(`${orderId}|${paymentId}`);
-    const digest = shasum.digest('hex');
-    if (digest === signature) {
+    const {selectedDetails, firstName, lastName, contact, street, city, state, postalCode, landmark,isSaveAddress } = await req.json();
     const userId = await UserAuth(); // Assume userId is set in middleware
     const user = await User.findById(userId);
     if (!user) {
@@ -32,6 +27,52 @@ export async function POST(req) {
     if (!cart) {
       return NextResponse.json({ message: 'Cart not found' }, { status: 404 });
     }
+    const total = cart.items.reduce((acc, item) => {
+        const price = item.discountedPrice; // Optional chaining
+        const quantity = item.quantity || 1; // Default to 1 if quantity is not defined
+  
+        // Log for debugging
+        console.log(`Item ID: ${item._id}, Price: ${price}, Quantity: ${quantity}`);
+  
+        if (typeof price !== 'number' || isNaN(price)) {
+          return NextResponse.json({ message: 'Price is not a valid type' }, { status: 403 });
+        }
+  
+        return acc + price * quantity; // Calculate total
+      }, 0);
+      console.log(total)
+      // Set up Razorpay order details
+      let address;
+      if(!selectedDetails){
+        if ((!firstName || !lastName || !contact || !street || !city || !state || !postalCode)) {
+          return NextResponse.json({ message: 'Given fields are required' }, { status: 400 });
+        }
+  
+         address = {
+          firstName,
+          lastName,
+          contact,
+          street,
+          city,
+          state,
+          postalCode,
+          landmark,
+        }
+        if(isSaveAddress){
+                 const  newadd = new Address({...address,userId});
+                user.addresses.push(newadd._id);
+                await user.save();
+                await newadd.save();
+        }
+}
+      else{
+         address = await Address.findById(selectedDetails);
+        if (!address) {
+            return NextResponse.json({
+                message: " Address Not Found"
+            }, { status: 404 });
+        }
+      
 
     let order = await Order.findOne({ userId });
     if (!order) {
@@ -48,10 +89,7 @@ export async function POST(req) {
       }}),
 
       payment:{
-        mode:"Prepaid",
-        paymentId:paymentId,
-        signature:signature,
-        orderId:orderId,
+        mode:"COD",
       },
       customer:{
         name:`${address.firstName} ${address.lastName}`,
@@ -68,10 +106,9 @@ export async function POST(req) {
      user.cart = null;
      await user.save();
     return NextResponse.json(order, { status: 201 });
-    } else {
-      return NextResponse.json({ message: 'Payment verification failed' }, { status: 400 });
-    }
-  } catch (error) {
+    
+  }
+} catch (error) {
     console.error('Error verifying payment:', error);
     return NextResponse.json({ message: 'Error verifying payment' }, { status: 500 });
   }

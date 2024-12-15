@@ -472,21 +472,14 @@ const DeliveryForm = () => {
         </div>
 
 
-     {paymentMethod === "Prepaid" ? <button
+      <button
         type="submit"
         className={`bg-[#BC264B] hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-lg w-full ${isLoading ? "opacity-50" : ""}`}
         disabled={isLoading}
         onClick={handleSubmit(onSubmitPrepaid)}
       >
         {isLoading ? "Processing..." : "Proceed to Payment"}
-      </button>: <button
-        type="submit"
-        className={`bg-[#BC264B] hover:bg-pink-700 text-white font-semibold py-3 px-6 rounded-lg w-full ${isLoading ? "opacity-50" : ""}`}
-        disabled={isLoading}
-        onClick={handleSubmit(handleCODPayment)}
-      >
-        {isLoading ? "Processing..." : "Place Order"}
-      </button> }
+      </button> 
     </form>
     </>
   );

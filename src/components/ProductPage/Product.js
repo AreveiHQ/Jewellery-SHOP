@@ -7,7 +7,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import RelatedProducts from "../RelatedProducts";
 import { useDispatch, useSelector } from "react-redux";
-import { AddwishList } from "@/lib/reducers/productbyIdReducer";
+import { AddwishList, RemovewishList } from "@/lib/reducers/productbyIdReducer";
 import { FaHeart, FaHeartCircleCheck, FaShare } from "react-icons/fa6";
 import { RWebShare } from "react-web-share";
 import toast from "react-hot-toast";
@@ -25,6 +25,7 @@ import {
   Typography,
   Card,
 } from "@/MaterialTailwindNext";
+import { addToCart } from "@/lib/reducers/cartReducer";
 export default function Product({ id }) {
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
@@ -57,7 +58,7 @@ export default function Product({ id }) {
         <div className="flex flex-col lg:flex-row gap-2 ">
            <div className="w-full md:w-[90%] lg:w-[40%] mx-auto">
             <div className="p-3 bg-[#F3F3F3] rounded-md md:mx-9  sticky top-24  ">
-            <div className="flex item-center justify-center rounded-md p-2 ">
+            <div className="flex flex-col item-center justify-center rounded-md p-2 ">
 
             <Carousel
             className="rounded-xl w-[500px]  md:w-full  max-w-[500px] lg:max-w-none pb-16 "
@@ -79,18 +80,26 @@ export default function Product({ id }) {
                 ))}
                 </div>
             )}
-            onClick={handleOpen}>
+           >
                 {product?.images?.map((img,ind)=><Image
                 width={400}
                 height={400}
                     src={img}
                     alt={`Product${ind}`}
                     key={`Product${ind}`}
-                    className="object-contain w-full h-auto "
+                    className="object-contain w-full h-auto hidden md:block "
                 />)}
                 </Carousel>
     
-                
+                <Button
+            size="sm"
+            variant="outlined"
+            color="blue-gray"
+            className="mr-5 flex items-center text-center"
+            onClick={handleOpen}
+          >
+           Full View
+          </Button>
             </div>
             <>
      
@@ -241,7 +250,8 @@ export default function Product({ id }) {
 function ProductInfo({info,productId}) {
     const pathname = usePathname();
     const dispatch = useDispatch();
-    const {user}= useSelector((state)=>state.user);
+    const {wishListByID,loadWishlist}= useSelector((state)=>state.wishlist);
+    const {loadingProductId} = useSelector((state)=>state.cart)
     const currentUrl = typeof window !== 'undefined' 
     ? `${window.location.origin}${pathname}` 
     : '';
@@ -253,7 +263,7 @@ function ProductInfo({info,productId}) {
             </h2>
             <div className="flex py-2">
                 <p className="text-sm text-gray-600">Made with 925 Silver |</p>
-                {user?.wishList.some((item)=>item?._id===productId) ?<button className="text-[#BC264B] text-sm mx-3 underline" onClick={()=>dispatch(AddwishList(productId))}><FaHeartCircleCheck  fontSize={20}/></button>
+                {loadWishlist ===productId? <span className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-red-500 border-4 mx-3 "></span>:wishListByID.some((item)=>item===productId) ?<button className="text-[#BC264B] text-sm mx-3 underline" onClick={()=>dispatch(RemovewishList(productId))}><FaHeartCircleCheck  fontSize={20}/></button>
                 :<button className=" text-sm mx-3 underline" onClick={()=>dispatch(AddwishList(productId))}><FaRegHeart  fontSize={20}/></button>}
                 
                 <RWebShare
@@ -292,7 +302,7 @@ function ProductInfo({info,productId}) {
         </div>
             <ProductFeatures />
             <div className="mt-6">
-            <p className="mb-2 mt-2 text-xl font-semibold">Check our Pincode</p>
+            <p className="mb-2 mt-2462 text-xl font-semibold">Check our Pincode</p>
             <input
                 type="text"
                 placeholder="Enter 6 Digit Pincode"
@@ -303,35 +313,139 @@ function ProductInfo({info,productId}) {
             </div>
 
             <div className="mt-2 mb-4 ">
-                <input
+                {/* <input
                     type="checkbox"
                     id="gift"
                     className="rounded-none"
-                />
-                <label htmlFor="gift" className="font-semibold text-sm mx-2">Add gift wrap to your order (Rs.50)</label>
+                /> */}
+                {/* <label htmlFor="gift" className="font-semibold text-sm mx-2">Add gift wrap to your order (Rs.50)</label> */}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <button className="bg-[#F8C0BF] text-black font-semibold  p-2 rounded w-full m-2">
+                {/* <button className="bg-[#F8C0BF] text-black font-semibold  p-2 rounded w-full m-2">
                     Buy Now
-                </button>
-                <button className=" border-[1px] border-[#F8C0BF] hover:bg-[#F8C0BF] text-black font-semibold p-2 rounded w-full m-2">
+                </button> */}
+               {loadingProductId === productId ?<button className=" border-[1px] border-[#f76664] hover:bg-[#f76664] text-black font-semibold p-2 rounded w-full m-2" disabled>
+                    Adding...
+                </button>:
+                <button className=" border-[1px] bg-[#F8C0BF] hover:bg-[#f76664] text-black font-semibold p-2 rounded w-full m-2" onClick={()=>dispatch(addToCart({productId:productId,quantity:1}))}>
                     Add to Cart
-                </button>
+                </button>}
             </div>
+            <Accordion/>
         </div>
         </div>
     );
 }
 
+const AccordionItem = ({ id, title, content }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div
+      className={`accordion border border-solid border-gray-300 p-4 rounded-xl transition duration-500 ${
+        isOpen ? "bg-indigo-50 border-indigo-600" : ""
+      } `}
+      id={id}
+    >
+      <button
+        className={`accordion-toggle group inline-flex items-center justify-between text-left text-base leading-8 text-gray-900 w-full transition duration-500 hover:text-indigo-600 ${
+          isOpen ? "text-indigo-600" : ""
+        }`}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-controls={`collapse-${id}`}
+        aria-expanded={isOpen}
+      >
+        <h5>{title}</h5>
+        <svg
+          className={`w-6 h-6 text-gray-900 transition duration-500 ${
+            isOpen ? "hidden" : "block"
+          } group-hover:text-indigo-600 origin-center`}
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6 12H18M12 18V6"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          ></path>
+        </svg>
+        <svg
+          className={`w-6 h-6 text-gray-900 transition duration-500 ${
+            isOpen ? "block" : "hidden"
+          } group-hover:text-indigo-600`}
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6 12H18"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          ></path>
+        </svg>
+      </button>
+      <div
+        id={`collapse-${id}`}
+        className={`accordion-content w-full overflow-hidden pr-4 transition-all ${
+          isOpen ? "max-h-screen" : "max-h-0"
+        }`}
+        aria-labelledby={id}
+      >
+        <p className="text-base text-gray-900 leading-6">{content}</p>
+      </div>
+    </div>
+  );
+};
+
+const Accordion = () => {
+  const items = [
+    {
+      id: "Description",
+      title: "Description",
+      content:
+        "To create an account, find the 'Sign up' or 'Create account' button, fill out the registration form with your personal information, and click 'Create account' or 'Sign up.' Verify your email address if needed, and then log in to start using the platform.",
+    },
+    {
+      id: "basic-heading-two",
+      title: "shipping",
+      content:
+        "Free express shipping 6 month warranty Shipping internationally to 20+ countriesBrand owned and marketed by: Indiejewel Fashions Private Limited No questions asked 30 days return policy 3rd floor, Magnum Vista, Raghuvanahalli, Bangalore, Karnataka - 560062",
+    },
+   
+  ];
+
+  return (
+    <div className="accordion-group mt-4" data-accordion="default-accordion">
+      {items.map((item) => (
+        <AccordionItem
+          key={item.id}
+          id={item.id}
+          title={item.title}
+          content={item.content}
+        />
+      ))}
+    </div>
+  );
+};
+
+
 
 function ProductFeatures() {
     return (
+        <>
         <div className="grid grid-cols-2 gap-4 mt-4 mx-2 text-sm">
             <FeatureItem label="Easy 30 Day Return" />
             <FeatureItem label="Lifetime Plating" />
             <FeatureItem label="925 Silver" />
             <FeatureItem label="6-Month Warranty" />
         </div>
+        
+        </>
     );
 }
 
@@ -339,3 +453,4 @@ function FeatureItem({ label }) {
     return <div className="font-semibold">{label}</div>;
 }
 
+7
